@@ -1,5 +1,12 @@
 #include "openglwindow.h"
 
+#include <QtGui/QWindow>
+#include <QtGui/QOpenGLFunctions>
+
+class QPainter;
+class QOpenGLContext;
+class QOpenGLPaintDevice;
+
 OpenGLWindow::OpenGLWindow(QWindow *parent) // создаём окно вызывая конструктор с инициализацией переменных.
     : QWindow(parent)
     , m_update_pending(false)       //
@@ -12,9 +19,14 @@ OpenGLWindow::OpenGLWindow(QWindow *parent) // создаём окно вызы�
                                             /// а не использовать растровый контент отображаемый QPainter используя QBackingStore.
 }
 
+OpenGLWindow::~OpenGLWindow()
+{
+    delete m_device;
+}
+
 /// Установка формата отображения контекста производится в конструкторе дочерних окон. (Раз это окно не предназначено для непосредственного отображения)
 /// Специфицируем формат и создаем платформо-зависимый сюрфейс
-QSurfaceFormat format;
+/*QSurfaceFormat format;
 format.setDepthBufferSize(24);
 format.setMajorVersion(4);
 format.setMinorVersion(3);
@@ -59,7 +71,7 @@ void OpenGLWindow::renderNow()  // основная функция рисова�
     if (needsInitialize) {                  //
         // Получить объект функции и назначить все точки входа
         // m_funcs объявлен как: QOpenGLFunctions_4_3_Core * m_funcs
-        m_funcs = m_context->versionFunctions();
+        m_funcs =(QOpenGLFunctions_4_3_Core*) m_context->versionFunctions();
             if (!m_funcs) {
               qWarning("Не поддерживает установленная в систему версия OpenGL функции версии 4.3, \n обновите драйвера или карту");
               exit(1);  // Первая проблема у нас

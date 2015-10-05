@@ -14,15 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    graphwidget.cpp \
     scene.cpp \
     lenswindow.cpp \
-    openglwindow.cpp
+    openglwindow.cpp \
+    oglw.cpp
 
 HEADERS  += mainwindow.h \
-    graphwidget.h \
     scene.h \
     lenswindow.h \
-    openglwindow.h
+    openglwindow.h \
+    oglw.h
 
 FORMS    += mainwindow.ui

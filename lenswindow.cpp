@@ -2,6 +2,7 @@
 
 /// шейдеры для рисования (определяем статически, можно конечно же потом грузить из файла)
 static const char *vertexShaderSource =
+    "#version 430 core;\n"
     "attribute highp vec4 posAttr;\n"
     "attribute lowp vec4 colAttr;\n"
     "varying lowp vec4 col;\n"
@@ -12,6 +13,7 @@ static const char *vertexShaderSource =
     "}\n";
 
 static const char *fragmentShaderSource =
+    "#version 430 core;\n"
     "varying lowp vec4 col;\n"
     "void main() {\n"
     "   gl_FragColor = col;\n"

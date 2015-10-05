@@ -2,6 +2,7 @@
 //#include <QApplication>
 #include <QGuiApplication>
 #include <lenswindow.h>
+#include <oglw.h>
 
 int main(int argc, char *argv[])
 {
@@ -9,7 +10,8 @@ int main(int argc, char *argv[])
   //MainWindow w;
   //w.show();
     //создаём окно рисования
-    LensWindow window;
+    //LensWindow window;
+    OGLW window;
     //window.resize(640,480);
     window.show();
     window.setAnimating(true);
