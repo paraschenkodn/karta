@@ -4,6 +4,7 @@
 #include <QWindow>
 #include <QOpenGLPaintDevice>
 #include <QOpenGLFunctions_4_3_Core>
+#include <QSurfaceFormat>
 
 // Создаём класс окна предназначенного для рисования в OpenGL
 /// Этот класс окна будет являться родителем для окон которые мы будем создавать для рисования наследуя от него

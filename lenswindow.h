@@ -3,7 +3,7 @@
 
 #include <openglwindow.h>
 #include <QOpenGLShaderProgram>
-
+#include <QScreen>
 ///
 /// \brief The LensWindow class
 ///

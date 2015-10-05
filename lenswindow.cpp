@@ -65,7 +65,7 @@ void LensWindow::render()
     QMatrix4x4 matrix;
     matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    matrix.rotate(100.0f * m_frame / (screen()->refreshRate()), 0, 1, 0);
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
