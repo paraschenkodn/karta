@@ -29,7 +29,7 @@ protected:
 
 private:
     int timerId; // обновление состояния по таймеру
-    Node *selectedNode; // активная (выбранная) нода ??
+    //Node *selectedNode; // активная (выбранная) нода ??
 };
 //! [0]
 

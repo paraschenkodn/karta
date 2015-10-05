@@ -2,6 +2,8 @@
 #define LENSWINDOW_H
 
 #include <openglwindow.h>
+#include <QOpenGLShaderProgram>
+
 ///
 /// \brief The LensWindow class
 ///

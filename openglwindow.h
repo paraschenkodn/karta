@@ -33,6 +33,9 @@ public:
 
     void setAnimating(bool animating);      // ???
 
+    QOpenGLFunctions_4_3_Core * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
+                                            /// Если бы нам требовалась совместимость мы могли бы просто использовать ... ", protected QOpenGLFunctions"  в объявлении
+                                            /// класса и не объявлять данную переменную.
 public slots:
     void renderLater();     //
     void renderNow();       //
@@ -49,9 +52,6 @@ private:
 
     QOpenGLContext *m_context;              //
     QOpenGLPaintDevice *m_device;           //
-    QOpenGLFunctions_4_3_Core * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
-                                            /// Если бы нам требовалась совместимость мы могли бы просто использовать ... ", protected QOpenGLFunctions"  в объявлении
-                                            /// класса и не объявлять данную переменную.
 };
 
 #endif // OPENGLWINDOW_H

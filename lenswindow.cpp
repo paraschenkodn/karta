@@ -36,9 +36,9 @@ LensWindow::LensWindow()
 
 GLuint LensWindow::loadShader(GLenum type, const char *source)
 {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, 0);
-    glCompileShader(shader);
+    GLuint shader = OpenGLWindow::m_funcs->glCreateShader(type);
+    OpenGLWindow::m_funcs->glShaderSource(shader, 1, &source, 0);
+    OpenGLWindow::m_funcs->glCompileShader(shader);
     return shader;
 }
 
@@ -56,9 +56,9 @@ void LensWindow::initialize()
 void LensWindow::render()
 {
     const qreal retinaScale = devicePixelRatio();
-    glViewport(0, 0, width() * retinaScale, height() * retinaScale);
+    OpenGLWindow::m_funcs->glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    OpenGLWindow::m_funcs->glClear(GL_COLOR_BUFFER_BIT);
 
     m_program->bind();
 
@@ -81,16 +81,16 @@ void LensWindow::render()
         0.0f, 0.0f, 1.0f
     };
 
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors);
+    OpenGLWindow::m_funcs->glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    OpenGLWindow::m_funcs->glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors);
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    OpenGLWindow::m_funcs->glEnableVertexAttribArray(0);
+    OpenGLWindow::m_funcs->glEnableVertexAttribArray(1);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    OpenGLWindow::m_funcs->glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(0);
+    OpenGLWindow::m_funcs->glDisableVertexAttribArray(1);
+    OpenGLWindow::m_funcs->glDisableVertexAttribArray(0);
 
     m_program->release();
 
