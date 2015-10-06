@@ -36,9 +36,9 @@ OGLW::OGLW(QWindow *parent) // создаём окно вызывая конст
   // Специфицируем формат и создаем платфоро-зависимый сюрфейс
   QSurfaceFormat format;
   format.setDepthBufferSize(24);
-  format.setMajorVersion(4);
-  format.setMinorVersion(3);
-  format.setSamples(4);
+  format.setMajorVersion(3);
+  format.setMinorVersion(1);
+  format.setSamples(16);
   format.setProfile(QSurfaceFormat::CoreProfile);
   setFormat(format);
   create();
@@ -53,7 +53,7 @@ OGLW::OGLW(QWindow *parent) // создаём окно вызывая конст
   m_context->makeCurrent(this);
   // Получить объект функции и назначить все точки входа
   // m_funcs объявлен как: QOpenGLFunctions_4_3_Core * m_funcs
-  m_funcs = (QOpenGLFunctions_3_3_Core*)m_context->versionFunctions();
+  m_funcs = (QOpenGLFunctions_3_1*)m_context->versionFunctions();
 
   if (!m_funcs) {
     qWarning("Could not obtain OpenGL versions object");

@@ -1,20 +1,22 @@
-#include "mainwindow.h"
-//#include <QApplication>
-#include <QGuiApplication>
-#include <lenswindow.h>
-#include <oglw.h>
+#include <QApplication>
+#include <QGLFormat>
 
-int main(int argc, char *argv[])
+#include "glwidget.h"
+
+int main( int argc, char* argv[] )
 {
-  QGuiApplication a(argc, argv);
-  //MainWindow w;
-  //w.show();
-    //создаём окно рисования
-    //LensWindow window;
-    OGLW window;
-    window.resize(640,480);
-    window.show();
-    window.setAnimating(true);
+ QApplication a( argc, argv );
 
-  return a.exec();
+// Specify an OpenGL 3.3 format using the Core profile.
+ // That is, no old-school fixed pipeline functionality
+ QGLFormat glFormat;
+ glFormat.setVersion( 3, 3 );
+ glFormat.setProfile( QGLFormat::CoreProfile ); // Requires >=Qt-4.8.0
+ glFormat.setSampleBuffers( true );
+
+// Create a GLWidget requesting our format
+ GLWidget w( glFormat );
+ w.show();
+
+return a.exec();
 }

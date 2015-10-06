@@ -17,12 +17,16 @@ SOURCES += main.cpp\
     scene.cpp \
     lenswindow.cpp \
     openglwindow.cpp \
-    oglw.cpp
+    oglw.cpp \
+    simplegl.cpp \
+    glwidget.cpp
 
 HEADERS  += mainwindow.h \
     scene.h \
     lenswindow.h \
     openglwindow.h \
-    oglw.h
+    oglw.h \
+    simplegl.h \
+    glwidget.h
 
 FORMS    += mainwindow.ui
