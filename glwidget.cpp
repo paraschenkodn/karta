@@ -33,17 +33,17 @@ void GLWidget::initializeGL()
  if ( !glFormat.sampleBuffers() )
  qWarning() << "Could not enable sample buffers";
 
-// Set the clear color to black
+ // Set the clear color to black
  glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 
-// Prepare a complete shader program…
+ // Prepare a complete shader program…
  if ( !prepareShaderProgram( ":/simple.vert", ":/simple.frag" ) )
  return;
 
-// We need us some vertex data. Start simple with a triangle ;-)
- float points[] = { –0.5f, –0.5f, 0.0f, 1.0f,
+ // We need us some vertex data. Start simple with a triangle ;-)
+ float points[] = {-0.5f, -0.5f, 0.0f, 1.0f,
  0.5f, -0.5f, 0.0f, 1.0f,
- 0.0f, 0.5f, 0.0f, 1.0f };
+ 0.0f, 0.5f, 0.0f, 1.0f};
  m_vertexBuffer.create();
  m_vertexBuffer.setUsagePattern( QGLBuffer::StaticDraw );
  if ( !m_vertexBuffer.bind() )
@@ -65,20 +65,34 @@ void GLWidget::initializeGL()
  // vertex buffer.
  m_shader.setAttributeBuffer( "vertex", GL_FLOAT, 0, 4 );
  m_shader.enableAttributeArray( "vertex" );
+
+ /*glfuncs = m_context->versionFunctions();
+ if (!glfuncs) {
+   qDebug()<<"Не поддерживается версия OpenGL этой программой.";
+   exit(1); //Хъюстон, у нас проблема номер раз
+ }
+ glfuncs->initializeOpenGLFunctions();
+
+ uint vao;
+ glGenVertexArrays(1, &vao);
+ glBindVertexArray(vao);//*/
+
+ qDebug() << QString((const char*)glGetString(GL_VERSION)) << "\n" << QString((const char*)glGetString(GL_VENDOR))<< "\n" << QString((const char*)glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
+
 }
 
 bool GLWidget::prepareShaderProgram( const QString& vertexShaderPath,
  const QString& fragmentShaderPath )
 {
  // First we load and compile the vertex shader…
- //bool result = m_shader.addShaderFromSourceFile( QGLShader::Vertex, vertexShaderPath );
- bool result = m_shader.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+ bool result = m_shader.addShaderFromSourceFile( QGLShader::Vertex, vertexShaderPath );
+ //bool result = m_shader.addShaderFromSourceCode(QGLShader::Vertex, vertexShaderSource);
  if ( !result )
  qWarning() << m_shader.log();
 
 // …now the fragment shader…
- //result = m_shader.addShaderFromSourceFile( QGLShader::Fragment, fragmentShaderPath );
- bool result = m_shader.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+ result = m_shader.addShaderFromSourceFile( QGLShader::Fragment, fragmentShaderPath );
+ //result = m_shader.addShaderFromSourceCode(QGLShader::Fragment, fragmentShaderSource);
  if ( !result )
  qWarning() << m_shader.log();
 

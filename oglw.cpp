@@ -33,12 +33,12 @@ OGLW::OGLW(QWindow *parent) // создаём окно вызывая конст
   setSurfaceType(QWindow::OpenGLSurface); /// Необходимо указать Qt что мы для рисования в окне будем использовать OpenGL,
                                           /// а не использовать растровый контент отображаемый QPainter используя QBackingStore.
 
-  // Специфицируем формат и создаем платфоро-зависимый сюрфейс
+  // Специфицируем формат и создаем платформо-зависимый сюрфейс
   QSurfaceFormat format;
   format.setDepthBufferSize(24);
   format.setMajorVersion(3);
-  format.setMinorVersion(1);
-  format.setSamples(16);
+  format.setMinorVersion(3);
+  format.setSamples(4);
   format.setProfile(QSurfaceFormat::CoreProfile);
   setFormat(format);
   create();
@@ -53,7 +53,7 @@ OGLW::OGLW(QWindow *parent) // создаём окно вызывая конст
   m_context->makeCurrent(this);
   // Получить объект функции и назначить все точки входа
   // m_funcs объявлен как: QOpenGLFunctions_4_3_Core * m_funcs
-  m_funcs = (QOpenGLFunctions_3_1*)m_context->versionFunctions();
+  m_funcs = (QOpenGLFunctions_3_3_Core*)m_context->versionFunctions();
 
   if (!m_funcs) {
     qWarning("Could not obtain OpenGL versions object");
@@ -61,6 +61,10 @@ OGLW::OGLW(QWindow *parent) // создаём окно вызывая конст
   }
 
   m_funcs->initializeOpenGLFunctions();
+
+  /*uint vao;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);//*/
 
   qDebug() << QString((const char*)glGetString(GL_VERSION)) << "\n" << QString((const char*)glGetString(GL_VENDOR))<< "\n" << QString((const char*)glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
 
@@ -173,6 +177,9 @@ void OGLW::initialize()
     m_posAttr = m_program->attributeLocation("posAttr");
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
+
+    vao.create();
+    vao.bind();
 }
 
 void OGLW::render()

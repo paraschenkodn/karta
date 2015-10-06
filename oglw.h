@@ -15,6 +15,8 @@
 #include <QOpenGLShaderProgram>
 #include <QScreen>
 
+#include <QOpenGLVertexArrayObject>
+
 class OGLW:public QWindow ///, protected QOpenGLFunctions
 {
   Q_OBJECT
@@ -29,7 +31,7 @@ public:
 
   void setAnimating(bool animating);      // ???
 
-  QOpenGLFunctions_3_1 * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
+  QOpenGLFunctions_3_3_Core * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
                                           /// Если бы нам требовалась совместимость мы могли бы просто использовать ... ", protected QOpenGLFunctions"  в объявлении
                                           /// класса и не объявлять данную переменную.
 public slots:
@@ -48,6 +50,8 @@ private:
 
   QOpenGLContext *m_context;              //
   QOpenGLPaintDevice *m_device;           //
+
+  QOpenGLVertexArrayObject vao;
 
   /// рисование
   GLuint loadShader(GLenum type, const char *source);

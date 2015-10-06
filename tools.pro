@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     lenswindow.cpp \
     openglwindow.cpp \
     oglw.cpp \
-    simplegl.cpp \
     glwidget.cpp
 
 HEADERS  += mainwindow.h \
@@ -26,7 +25,6 @@ HEADERS  += mainwindow.h \
     lenswindow.h \
     openglwindow.h \
     oglw.h \
-    simplegl.h \
     glwidget.h
 
 FORMS    += mainwindow.ui
