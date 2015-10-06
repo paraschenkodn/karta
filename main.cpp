@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     //создаём окно рисования
     //LensWindow window;
     OGLW window;
-    //window.resize(640,480);
+    window.resize(640,480);
     window.show();
     window.setAnimating(true);
 

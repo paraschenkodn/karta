@@ -3,22 +3,24 @@
 
 /// шейдеры для рисования (определяем статически, можно конечно же потом грузить из файла)
 static const char *vertexShaderSource =
-    "#version 300 core;\n"//*/
-    "attribute highp vec4 posAttr;\n"
-    "attribute lowp vec4 colAttr;\n"
-    "varying lowp vec4 col;\n"
-    "uniform highp mat4 matrix;\n"
-    "void main() {\n"
-    "   col = colAttr;\n"
-    "   gl_Position = matrix * posAttr;\n"
-    "}\n";
+        "#version 330 core\n"
+        "uniform mat4 projectionMatrix;\n"
+        "in vec3 position;\n"
+        "in vec3 color;\n"
+        "out vec3 fragmentColor;\n"
+        "void main(void) {\n"
+                // перевод вершинных координат в однородные
+                "gl_Position   = projectionMatrix * vec4(position, 1.0);\n"
+                // передаем цвет вершины в фрагментный шейдер
+                "fragmentColor = color; }\n";//*/
 
 static const char *fragmentShaderSource =
-    "#version 300 core;\n"//*/
-    "varying lowp vec4 col;\n"
-    "void main() {\n"
-    "   gl_FragColor = col;\n"
-    "}\n";
+        "#version 330 core\n"
+        "in vec3 fragmentColor;\n"
+        "out vec4 color;\n"
+        "void main(void) {\n"
+                // зададим цвет пикселя
+                "color = vec4(fragmentColor, 1.0); }\n";//*/
 
 OGLW::OGLW(QWindow *parent) // создаём окно вызывая конструктор с инициализацией переменных.
   : QWindow(parent)
@@ -93,6 +95,7 @@ void OGLW::renderNow()  // основная функция рисования с
 
     render();                           // добрались до прорисовки сцены (там мы будем рисовать в буфере?)
 
+    m_context->makeCurrent(this);
     m_context->swapBuffers(this);       // выкидываем на экран из буфера то, что нарисовали
 
     if (m_animating)
