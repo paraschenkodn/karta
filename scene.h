@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <QOpenGLWidget>
-#include <triangle.h>
+#include "triangle.h"
 #include <QOpenGLShaderProgram>
 
 class Scene : public QOpenGLWidget
