@@ -11,47 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Tools (Karta)</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QTreeWidget" name="treeWidget">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>30</y>
-      <width>511</width>
-      <height>311</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="allColumnsShowFocus">
-     <bool>true</bool>
-    </property>
-    <property name="columnCount">
-     <number>3</number>
-    </property>
-    <column>
-     <property name="text">
-      <string notr="true">1</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string notr="true">2</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string notr="true">3</string>
-     </property>
-    </column>
-   </widget>
-  </widget>
+  <widget class="Scene" name="SceneWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -61,6 +23,12 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuKarta">
+    <property name="title">
+     <string>Karta</string>
+    </property>
+   </widget>
+   <addaction name="menuKarta"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -73,6 +41,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Scene</class>
+   <extends>QWidget</extends>
+   <header>scene.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

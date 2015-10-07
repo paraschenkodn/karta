@@ -85,14 +85,14 @@ bool GLWidget::prepareShaderProgram( const QString& vertexShaderPath,
  const QString& fragmentShaderPath )
 {
  // First we load and compile the vertex shader…
- bool result = m_shader.addShaderFromSourceFile( QGLShader::Vertex, vertexShaderPath );
- //bool result = m_shader.addShaderFromSourceCode(QGLShader::Vertex, vertexShaderSource);
+ //bool result = m_shader.addShaderFromSourceFile( QGLShader::Vertex, vertexShaderPath );
+ bool result = m_shader.addShaderFromSourceCode(QGLShader::Vertex, vertexShaderSource);
  if ( !result )
  qWarning() << m_shader.log();
 
 // …now the fragment shader…
- result = m_shader.addShaderFromSourceFile( QGLShader::Fragment, fragmentShaderPath );
- //result = m_shader.addShaderFromSourceCode(QGLShader::Fragment, fragmentShaderSource);
+ //result = m_shader.addShaderFromSourceFile( QGLShader::Fragment, fragmentShaderPath );
+ result = m_shader.addShaderFromSourceCode(QGLShader::Fragment, fragmentShaderSource);
  if ( !result )
  qWarning() << m_shader.log();
 
