@@ -35,7 +35,7 @@ void Scene::initializeGL() {
     // устанавливаем привязку между приложением и шейдерами
     m_vertexAttr=m_program.attributeLocation("vertexAttr");
     m_colorAttr=m_program.attributeLocation("colorAttr");
-    m_matrixUniform=m_program.attributeLocation("matrix");
+    m_matrixUniform=m_program.uniformLocation("matrix");
 
     //создаём объект - треугольник
     m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr);
