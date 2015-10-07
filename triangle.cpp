@@ -1,22 +1,41 @@
 #include "triangle.h"
 
-Triangle::Triangle(QOpenGLShaderProgram *program, int vertexAttr, int colorAttr):
+Triangle::Triangle(QOpenGLShaderProgram *program, int vertexAttr, int colorAttr, int texAttr, int texUniform):
         m_program(program),
         m_vertexAttr(vertexAttr),
-        m_colorAttr(colorAttr)
+        m_colorAttr(colorAttr),
+        m_texAttr(texAttr),
+        m_texUniform(texUniform),
+        m_x0(-0.5f),
+        m_y0(-0.5f),
+        m_size(1.0f)  // size triangle
 {
 initVertices();
 initColors();
+// грузим текстуру
+m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
+}
+
+Triangle::~Triangle()
+{
+  delete m_texture;
 }
 
 void Triangle::draw()
 {
-    // устанавливаем место хранения координат вершин
+  // подключаем текстуру
+  m_texture->bind();
+
+  // устанавливаем место хранения координат
     m_program->setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
     m_program->setAttributeArray(m_colorAttr, m_colors.data(), 3);
+    m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
+    m_program->setUniformValue(m_texAttr,0);
+
     // активируем массивы
     m_program->enableAttributeArray(m_vertexAttr);
     m_program->enableAttributeArray(m_colorAttr);
+    m_program->enableAttributeArray(m_texAttr);
 
     // рисуем треугольник
     glDrawArrays(GL_TRIANGLES,0,m_vertices.size()/3);
@@ -24,24 +43,49 @@ void Triangle::draw()
     // деактивируем массивы
     m_program->disableAttributeArray(m_vertexAttr);
     m_program->disableAttributeArray(m_colorAttr);
+    m_program->disableAttributeArray(m_texAttr);
+}
+
+void Triangle::setx0(float x)
+{
+  m_x0=x;
+  // пересчитываем остальные точки (инициализируем заново вершины)
+  initVertices();
+}
+
+void Triangle::sety0(float y)
+{
+  m_y0=y;
+  // пересчитываем остальные точки (инициализируем заново вершины)
+  initVertices();
+}
+
+float Triangle::getx0()
+{
+   return m_x0;
+}
+
+float Triangle::gety0()
+{
+    return m_y0;
 }
 
 void Triangle::initVertices()   // инициализация вектора вершин
 {
 m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас 3 вершины по 4 координаты в каждой (4?)
 // 0
-m_vertices[0] = -0.5f;
-m_vertices[1] = -0.5f;
+m_vertices[0] = m_x0;
+m_vertices[1] = m_y0;
 m_vertices[2] = 0.0f;
 
 // 1
-m_vertices[3] = 0.5f;
-m_vertices[4] = -0.5f;
+m_vertices[3] = m_x0+m_size;
+m_vertices[4] = m_y0;
 m_vertices[5] = 0.0f;
 
 // 2
-m_vertices[6] = 0.0f;
-m_vertices[7] = 0.5f;
+m_vertices[6] = m_x0+m_size/2.0f;
+m_vertices[7] = m_y0+m_size;
 m_vertices[8] = 0.0f;
 }
 
@@ -62,4 +106,16 @@ void Triangle::initColors()      // инициализация вектора ц
     m_colors[6] = 0.0f;
     m_colors[7] = 0.0f;
     m_colors[8] = 1.0f;
+}
+
+void Triangle::initTexCoords()
+{
+  // задаём координаты на текстуре в порядке обхода вершин
+  m_texcoords.resize(6);
+  m_texcoords[0]= 0.0f;
+      m_texcoords[1]=0.0f;
+      m_texcoords[2]=1.0f;
+      m_texcoords[3]=0.0f;
+      m_texcoords[4]=0.5f;
+      m_texcoords[5]=1.0f;
 }

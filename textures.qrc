@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Textures/rbt.png</file>
+        <file>Textures/sml.png</file>
+    </qresource>
+</RCC>
