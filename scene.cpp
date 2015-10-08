@@ -81,6 +81,7 @@ void Scene::paintGL(){
     // вызываем функцию рисования
     m_triangle->draw();
 
+
     // очищаем программу
     m_program.release();
 }

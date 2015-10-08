@@ -15,14 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     scene.cpp \
-    triangle.cpp
+    triangle.cpp \
+    pointsofsphere.cpp
 
 HEADERS  += mainwindow.h \
     scene.h \
-    triangle.h
+    triangle.h \
+    pointsofsphere.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
     shaders.qrc \
-    textures.qrc
+    textures.qrc \
+    pointsofsphere.qrc

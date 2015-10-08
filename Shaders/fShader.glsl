@@ -3,6 +3,6 @@ varying highp vec2 texCoord;  // входная переменная (перед
 uniform sampler2D texUniform;
 
 void main () {
-    //gl_FragColor = color; // просто принимаем значение без обработки
-    gl_FragColor = texture2D(texUniform, texCoord); //
+    gl_FragColor = color; // просто принимаем значение без обработки
+    //gl_FragColor = texture2D(texUniform, texCoord); //
 }

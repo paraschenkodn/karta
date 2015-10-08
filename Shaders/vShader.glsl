@@ -7,6 +7,6 @@ varying highp vec2 texCoord;  // общая переменная для верш
 
 void main () {
     gl_Position = matrix * vertexAttr; // устанавливаем позицию вершин через матрицу
-    //color = colorAttr; // и передаём цвет в фрагментный шейдер
-    texCoord = texAttr; // и передаём цвет в фрагментный шейдер
+    color = colorAttr; // и передаём цвет в фрагментный шейдер
+    //texCoord = texAttr; // и передаём цвет в фрагментный шейдер
 }
