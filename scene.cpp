@@ -104,6 +104,18 @@ void Scene::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Down:
           m_triangle->sety0(m_triangle->m_y0-step);
       break;
+  case Qt::Key_W:
+    break;
+  case Qt::Key_S:
+    break;
+  case Qt::Key_A:
+        --m_angle;
+        if (m_angle<0) m_angle=359;
+    break;
+  case Qt::Key_D:
+        ++m_angle;
+        if (m_angle>=360) m_angle=0;
+    break;
     default:
       break;
     }
@@ -112,8 +124,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
 void Scene::slotAnimation()
 {
-  ++m_angle; // поворот на 1 градус?
-  if (m_angle>=360) m_angle=0;
+  ///++m_angle; // поворот на 1 градус?
+  ///if (m_angle>=360) m_angle=0;
   //m_triangle->setx0(m_triangle->m_x0-step);
   update();
 }

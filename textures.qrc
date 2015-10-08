@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>Textures/rbt.png</file>
         <file>Textures/sml.png</file>
+        <file>Textures/Blocks.jpg</file>
     </qresource>
 </RCC>

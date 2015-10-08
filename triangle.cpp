@@ -12,6 +12,7 @@ Triangle::Triangle(QOpenGLShaderProgram *program, int vertexAttr, int colorAttr,
 {
 initVertices();
 initColors();
+initTexCoords();
 // грузим текстуру
 m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
 }
