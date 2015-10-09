@@ -9,7 +9,7 @@ public:
     pointsofsphere();
 
     void getpoints(); // расчёт координат заданного количества точек и внесение в coords и pointsof
-    std::vector<std::vector> pointsof;
+    std::vector<std::vector<float> *> pointsof;
     std::vector<float> coords;
 };
 
