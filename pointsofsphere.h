@@ -6,11 +6,15 @@
 class pointsofsphere
 {
 public:
-    pointsofsphere();
+    pointsofsphere(int);
+    ~pointsofsphere();
 
     void getpoints(); // расчёт координат заданного количества точек и внесение в coords и pointsof
-    std::vector<std::vector<float> *> pointsof;
-    std::vector<float> coords;
+    std::vector< std::vector<float> > pointsof;
+    //std::vector<float> coords;
+    int size;
+protected:
+    //void init();
 };
 
 #endif // POINTSOFSPHERE_H

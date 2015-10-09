@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include "triangle.h"
+#include "pointsofsphere.h"
 #include <QOpenGLShaderProgram>
 #include <QKeyEvent>
 #include <QTimer>
@@ -24,6 +25,8 @@ private:
 
   Triangle *m_triangle;
   QOpenGLShaderProgram m_program;
+
+  pointsofsphere *spherepoints;
 
   // создаём идентификаторы для обращения к шейдерным переменным
   int m_vertexAttr;

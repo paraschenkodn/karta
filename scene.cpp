@@ -19,6 +19,7 @@ Scene::Scene(QWidget *parent) :
 Scene::~Scene()
 {
 delete m_triangle;
+    delete spherepoints;
 }
 
 void Scene::initializeGL() {
@@ -49,6 +50,9 @@ void Scene::initializeGL() {
 
     //создаём объект - треугольник
     m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
+
+    //создаём сферу
+    spherepoints=new pointsofsphere(300); // инициализируем массив координат
 }
 
 void Scene::paintGL(){

@@ -9,33 +9,53 @@
 #include <QString>
 #include <QStringList>
 #include <QFile>
+#include <QTextStream>
 
-pointsofsphere::pointsofsphere()
-{
+pointsofsphere::pointsofsphere(int initsize=300):size(initsize) {
     //устанавливаем размерность массива массивов координат
-    pointsof.resize(300+1);
-// читаем статические координаты из файла и заносим в pointsof и coords
-    QString filename, prob;
-    QStringList *list;
+    pointsof.resize(size+1);
+    // читаем статические координаты из файла и заносим в pointsof и coords
+    QString filename, prob, line;
     QFile file;
-for (int i=2,i<=300,i++) {
-    if (i<1000) prob="";
-    if (i<100) prob=" ";
-    if (i<10) prob="  ";
-    filename=":/xyz/xyz for N= "+prob+i+".txt";
-    file.setFileName(filename);
-    file.open(QIODevice::ReadOnly);
-    QTextStream in(&file);
+    // 0 и 1 индексы содержат нулевые координаты
+    pointsof[0].resize(3);
+    pointsof[0][0]=0.0f;
+    pointsof[0][1]=0.0f;
+    pointsof[0][2]=0.0f;
+    pointsof[1].resize(3);
+    pointsof[1][0]=0.0f;
+    pointsof[1][1]=0.0f;
+    pointsof[1][2]=0.0f;
+    for (int i=2;i<=300;i++) {
+        if (i<1000) prob="";
+        if (i<100) prob=" ";
+        if (i<10) prob="  ";
+        filename.setNum(i);
+        filename=":/xyz/xyz for N= "+prob+filename+".txt";
+        file.setFileName(filename);
+        file.open(QIODevice::ReadOnly);
+        QTextStream in(&file);
 
-    // пропускаем первую строку в структуре данных файлов
-    QString line = in.readLine();
-    // далее читаем количество строк по количеству координат
-    for (int a=0,a<(i-1),a++){
-        QString line = in.readLine();
+        // инициализируем массив координат, умножая i на 3 (три координаты на точку)
+        pointsof[i].resize(i*3);
+        // пропускаем первую строку в структуре данных файлов
+        line = in.readLine();
+        // далее читаем количество строк по количеству координат
+        for (int a=0;a<(i*3-1);a++){
+            line = in.readLine();
+            // старт 8, значение 18, промежуток 3
+            pointsof[i][a]=line.mid(8,18).toFloat();
+            pointsof[i][a+1]=line.mid(29,18).toFloat();
+            pointsof[i][a+2]=line.mid(50,18).toFloat();
+            a+=2;
+        }
+        file.close();
     }
+}
 
-    file.close();
-    }
+pointsofsphere::~pointsofsphere()
+{
+
 }
 
 void pointsofsphere::getpoints()
