@@ -30,7 +30,7 @@ Makefile*
 *.autosave
 
 #QtCtreator Qml
-*.qmlproject.user
+*.user
 *.qmlproject.user.*
 
 #CUDA

@@ -1,0 +1,15 @@
+INPUT(
+./release\abstractscene.o
+./release\material.o
+./release\texture.o
+./release\sampler.o
+./release\camera.o
+./release\main.o
+./release\window.o
+./release\terraintessellationscene.o
+./release\qrc_terrain_tessellation.o
+./release\moc_abstractscene.o
+./release\moc_camera.o
+./release\moc_window.o
+./release\moc_terraintessellationscene.o
+);
