@@ -4,14 +4,36 @@
 /// Входной параметр - количество точек на сфере,
 /// выходные данные - массив точек.
 /// Пока программно координаты не расчитываются, массив выдаётся из статической таблицы.
-/// М
+///
+/// прим: Реализация через динамический массив была бы быстрее на 20% чем через vector
 
 #include <QString>
-#include <QStringList>
 #include <QFile>
 #include <QTextStream>
 
-pointsofsphere::pointsofsphere(int initsize=300):size(initsize) {
+pointsofsphere::pointsofsphere()
+{
+    size=300;
+    init();
+}
+
+pointsofsphere::pointsofsphere(int initsize){
+    size=initsize;
+    init();
+}
+
+pointsofsphere::~pointsofsphere()
+{
+
+}
+
+void pointsofsphere::getpoints()
+{
+    // TO DO пока проблема не решена.
+}
+
+void pointsofsphere::init()
+{
     //устанавливаем размерность массива массивов координат
     pointsof.resize(size+1);
     // читаем статические координаты из файла и заносим в pointsof и coords
@@ -51,15 +73,5 @@ pointsofsphere::pointsofsphere(int initsize=300):size(initsize) {
         }
         file.close();
     }
-}
-
-pointsofsphere::~pointsofsphere()
-{
-
-}
-
-void pointsofsphere::getpoints()
-{
-// TO DO пока проблема не решена.
 }
 

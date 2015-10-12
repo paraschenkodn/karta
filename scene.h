@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include "triangle.h"
 #include "pointsofsphere.h"
+#include "shphere.h"
 #include <QOpenGLShaderProgram>
 #include <QKeyEvent>
 #include <QTimer>
@@ -25,6 +26,7 @@ private:
 
   Triangle *m_triangle;
   QOpenGLShaderProgram m_program;
+  shphere *m_shphere;
 
   pointsofsphere *spherepoints;
 

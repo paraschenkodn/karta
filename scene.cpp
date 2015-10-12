@@ -51,8 +51,11 @@ void Scene::initializeGL() {
     //создаём объект - треугольник
     m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
 
-    //создаём сферу
+    //создаём сетевую сферу
     spherepoints=new pointsofsphere(300); // инициализируем массив координат
+
+    // тест - создаём простую сферу на шейдерах
+    m_shphere=new shphere(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
 }
 
 void Scene::paintGL(){
