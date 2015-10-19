@@ -4,5 +4,7 @@
         <file>Shaders/vShader.glsl</file>
         <file>Shaders/fShphere.glsl</file>
         <file>Shaders/vShphere.glsl</file>
+        <file>Shaders/fShphereOrto.glsl</file>
+        <file>Shaders/vShphereOrto.glsl</file>
     </qresource>
 </RCC>

@@ -13,6 +13,7 @@ public:
     void drop();
 
     QOpenGLShaderProgram m_program;
+    //GLuint m_progID;
     int m_vertexAttr;
     int m_colorAttr;
     int m_texAttr;

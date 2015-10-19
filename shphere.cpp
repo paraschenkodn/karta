@@ -19,10 +19,12 @@ shphere::shphere()
 {
     // инициализируем шейдеры
     QOpenGLShader vShader(QOpenGLShader::Vertex);
-    vShader.compileSourceFile(":/Shaders/vShphere.glsl");
+    //vShader.compileSourceFile(":/Shaders/vShphere.glsl");
+    vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
 
     QOpenGLShader fShader(QOpenGLShader::Fragment);
-    fShader.compileSourceFile(":/Shaders/fShphere.glsl");
+    //fShader.compileSourceFile(":/Shaders/fShphere.glsl");
+    fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
 
     //добавляем шейдеры в программу
     m_program.addShader(&vShader);
@@ -56,23 +58,36 @@ void shphere::init()
 void shphere::draw()
 {
     // устанавливаем место хранения координат
-      m_program.setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
-      m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
+      ///m_program.setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
+      ///m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
       //m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
       //m_program->setUniformValue(m_texAttr,0);
-      m_program.setAttributeValue("R", 0.3f); // пока используем статичный радиус
+      m_program.setAttributeValue("R", 1.0f); // пока используем статичный радиус
 
       // активируем массивы цветов
-      m_program.enableAttributeArray(m_vertexAttr);
-      m_program.enableAttributeArray(m_colorAttr);
+      ///m_program.enableAttributeArray(m_vertexAttr);
+      ///m_program.enableAttributeArray(m_colorAttr);
       //m_program->enableAttributeArray(m_texAttr);
 
       // рисуем точки
-      glDrawArrays(GL_POINTS,0,m_vertices.size()/3);
+      const float light0_position[4] = {1,1,1,0};
+      glEnable(GL_COLOR_MATERIAL);
+      glEnable(GL_DEPTH_TEST);
+      glEnable(GL_LIGHTING);
+      glEnable(GL_LIGHT0);
+      glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+      glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+      //*/
+
+      ///glDrawArrays(GL_POINTS,0,m_vertices.size()/3);
+      glBegin(GL_POINTS);
+      glColor3f(0.0f, 1.0f, 0.0f);
+      glVertex3f(0.0f, 0.0f, 0.0f);
+      glEnd();//*/
 
       // деактивируем массивы
-      m_program.disableAttributeArray(m_vertexAttr);
-      m_program.disableAttributeArray(m_colorAttr);
+      ///m_program.disableAttributeArray(m_vertexAttr);
+      ///m_program.disableAttributeArray(m_colorAttr);
       //m_program->disableAttributeArray(m_texAttr);//*/
 }
 
@@ -87,8 +102,8 @@ void shphere::initVertices()   // инициализация вектора то
 // оформляем координаты трёх точек
 m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас по 1 вершины по 3 координаты в каждой на три точки
 // 0
-m_vertices[0] = 0.6f;
-m_vertices[1] = 0.6f;
+m_vertices[0] = 0.0f;
+m_vertices[1] = 0.0f;
 m_vertices[2] = 0.0f;
 
 // 1
