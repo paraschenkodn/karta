@@ -3,11 +3,6 @@
 /// пока только в перспективной проекции (?)
 ///
 
-shphere::shphere()
-{
-
-}
-
 /*// получение лога ошибок компиляции шейдеров
 void shphere::printInfoLog(GLuint obj) {
     int log_size = 0;
@@ -20,25 +15,112 @@ void shphere::printInfoLog(GLuint obj) {
     delete [] infoLog;
 }//*/
 
+shphere::shphere()
+{
+    // инициализируем шейдеры
+    QOpenGLShader vShader(QOpenGLShader::Vertex);
+    vShader.compileSourceFile(":/Shaders/vShphere.glsl");
+
+    QOpenGLShader fShader(QOpenGLShader::Fragment);
+    fShader.compileSourceFile(":/Shaders/fShphere.glsl");
+
+    //добавляем шейдеры в программу
+    m_program.addShader(&vShader);
+    m_program.addShader(&fShader);
+    // линкуем загруженные в программу шейдеры вместе и проверяем
+    if (!m_program.link()){
+        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа для Шфер не слинковалась");
+        return; // Хъюстон, у нас проблемы
+    }
+    // устанавливаем привязку между приложением и шейдерами  ???зачем???
+    // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
+    m_vertexAttr=m_program.attributeLocation("vertexAttr");          // координаты точек из массива
+    m_matrixUniform=m_program.uniformLocation("viewport");  // направление просмотра
+    m_colorAttr=m_program.attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
+    //m_texAttr=m_program.attributeLocation("texAttr");
+    //m_texUniform=m_program.attributeLocation("texUniform");//*/
+    initVertices();
+    initColors();
+}
+
+void shphere::init()
+{
+    //подключаем программу и проверяем
+    if (!m_program.bind()){
+        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не сбиндилась");
+        return;
+    }
+
+}
+
 void shphere::draw()
 {
     // устанавливаем место хранения координат
-      m_program->setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
-      m_program->setAttributeArray(m_colorAttr, m_colors.data(), 3);
-      m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
-      m_program->setUniformValue(m_texAttr,0);
+      m_program.setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
+      m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
+      //m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
+      //m_program->setUniformValue(m_texAttr,0);
+      m_program.setAttributeValue("R", 0.3f); // пока используем статичный радиус
 
-      // активируем массивы
-      m_program->enableAttributeArray(m_vertexAttr);
-      m_program->enableAttributeArray(m_colorAttr);
-      m_program->enableAttributeArray(m_texAttr);
+      // активируем массивы цветов
+      m_program.enableAttributeArray(m_vertexAttr);
+      m_program.enableAttributeArray(m_colorAttr);
+      //m_program->enableAttributeArray(m_texAttr);
 
-      // рисуем треугольник
-      glDrawArrays(GL_TRIANGLES,0,m_vertices.size()/3);
+      // рисуем точки
+      glDrawArrays(GL_POINTS,0,m_vertices.size()/3);
 
       // деактивируем массивы
-      m_program->disableAttributeArray(m_vertexAttr);
-      m_program->disableAttributeArray(m_colorAttr);
-      m_program->disableAttributeArray(m_texAttr);
+      m_program.disableAttributeArray(m_vertexAttr);
+      m_program.disableAttributeArray(m_colorAttr);
+      //m_program->disableAttributeArray(m_texAttr);//*/
+}
+
+void shphere::drop()
+{
+    // очищаем программу
+    m_program.release();
+}
+
+void shphere::initVertices()   // инициализация вектора точек
+{
+// оформляем координаты трёх точек
+m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас по 1 вершины по 3 координаты в каждой на три точки
+// 0
+m_vertices[0] = 0.6f;
+m_vertices[1] = 0.6f;
+m_vertices[2] = 0.0f;
+
+// 1
+m_vertices[3] = -0.6f;
+m_vertices[4] = 0.6f;
+m_vertices[5] = 0.0f;
+
+// 2
+m_vertices[6] = 0.0f;
+m_vertices[7] = -0.6f;
+m_vertices[8] = 0.0f;
+}
+
+// у нас пока три точки
+// на каждую точку оформляем по одной координате цвета (R,G,B)
+void shphere::initColors()
+{
+    m_colors.resize(9); // увеличиваем масив до 9 значений, т.к. у нас 3 вершины по 3 цвета в каждой (или 12 если с альфой)
+    // 0
+    m_colors[0] = 1.0f;
+    m_colors[1] = 0.0f;
+    m_colors[2] = 0.0f;
+
+    // 1
+    m_colors[3] = 0.0f;
+    m_colors[4] = 1.0f;
+    m_colors[5] = 0.0f;
+
+    // 2
+    m_colors[6] = 0.0f;
+    m_colors[7] = 0.0f;
+    m_colors[8] = 1.0f;
+
 }
 

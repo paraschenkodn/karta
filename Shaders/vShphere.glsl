@@ -2,14 +2,20 @@
 
 uniform vec4 viewport;
 attribute float R;
+attribute highp vec4 vertexAttr; // входной аттрибут для координат вершин
+attribute lowp vec4 colorAttr;  // // входной аттрибут для координат цветов
+
 
 varying mat4 VPMTInverse;
 varying mat4 VPInverse;
 varying vec3 centernormclip;
 
 void main() {
-    gl_Position   = gl_ModelViewProjectionMatrix * gl_Vertex;
-    gl_FrontColor = gl_Color;
+    //gl_Position   = gl_ModelViewProjectionMatrix * gl_Vertex;		// это убрали, т.к. позиция передаётся в программу, а не из контекста OpenGL
+    //gl_FrontColor = gl_Color;						// это убрали, т.к. цвет передаётся в программу, а не из контекста  OpenGL
+    gl_Position = viewport * vertexAttr; // устанавливаем позицию вершин через матрицу
+    gl_FrontColor = colorAttr; // и передаём цвет в фрагментный шейдер
+
 
     mat4 T = mat4(
             1.0, 0.0, 0.0, 0.0,

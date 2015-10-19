@@ -17,34 +17,90 @@ initTexCoords();
 m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
 }
 
+Triangle::Triangle():
+    m_x0(-0.5f),
+    m_y0(-0.5f),
+    m_size(1.0f)  // size triangle
+{
+    initVertices();
+    initColors();
+    initTexCoords();
+    // грузим текстуру
+    m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
+
+    // инициализируем шейдеры
+    QOpenGLShader vShader(QOpenGLShader::Vertex);
+    vShader.compileSourceFile(":/Shaders/vShader.glsl");
+
+    QOpenGLShader fShader(QOpenGLShader::Fragment);
+    fShader.compileSourceFile(":/Shaders/fShader.glsl");
+
+    //добавляем шейдеры в программу
+    m_program.addShader(&vShader);
+    m_program.addShader(&fShader);
+    // линкуем загруженные в программу шейдеры вместе и проверяем
+    if (!m_program.link()){
+        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не слинковалась");
+        return; // Хъюстон, у нас проблемы
+    }
+    // устанавливаем привязку между приложением и шейдерами  ???зачем???
+    // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
+    m_vertexAttr=m_program.attributeLocation("vertexAttr");
+    m_colorAttr=m_program.attributeLocation("colorAttr");
+    m_matrixUniform=m_program.uniformLocation("matrix");
+    m_texAttr=m_program.attributeLocation("texAttr");
+    m_texUniform=m_program.attributeLocation("texUniform");//*/
+
+}
+
 Triangle::~Triangle()
 {
   delete m_texture;
 }
 
-void Triangle::draw()
+void Triangle::init()
 {
-  // подключаем текстуру
-  m_texture->bind();
+    //подключаем программу и проверяем
+    if (!m_program.bind()){
+        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не сбиндилась");
+        return;
+    }
+    // убираем искажения текстур
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    // подключаем текстуру   (наложение, или нет, текстуры, реализуется в самом шейдере)
+    m_texture->bind();
+
+}
+
+void Triangle::draw()   // draw(*allcoords); // vertex, color, textures
+{
   // устанавливаем место хранения координат
-    m_program->setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
-    m_program->setAttributeArray(m_colorAttr, m_colors.data(), 3);
-    m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
-    m_program->setUniformValue(m_texAttr,0);
+    m_program.setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
+    m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
+    m_program.setAttributeArray(m_texAttr, m_texcoords.data(), 2);
+    m_program.setUniformValue(m_texAttr,0);
 
     // активируем массивы
-    m_program->enableAttributeArray(m_vertexAttr);
-    m_program->enableAttributeArray(m_colorAttr);
-    m_program->enableAttributeArray(m_texAttr);
+    m_program.enableAttributeArray(m_vertexAttr);
+    m_program.enableAttributeArray(m_colorAttr);
+    m_program.enableAttributeArray(m_texAttr);
 
     // рисуем треугольник
     glDrawArrays(GL_TRIANGLES,0,m_vertices.size()/3);
 
     // деактивируем массивы
-    m_program->disableAttributeArray(m_vertexAttr);
-    m_program->disableAttributeArray(m_colorAttr);
-    m_program->disableAttributeArray(m_texAttr);
+    m_program.disableAttributeArray(m_vertexAttr);
+    m_program.disableAttributeArray(m_colorAttr);
+    m_program.disableAttributeArray(m_texAttr);
+}
+
+void Triangle::drop()
+{
+    // очищаем программу
+    m_program.release();
+
 }
 
 void Triangle::setx0(float x)

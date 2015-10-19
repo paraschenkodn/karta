@@ -26,6 +26,7 @@ private:
 
   Triangle *m_triangle;
   QOpenGLShaderProgram m_program;
+  //QVector<QOpenGLShaderProgram *> m_program;
   shphere *m_shphere;
 
   pointsofsphere *spherepoints;

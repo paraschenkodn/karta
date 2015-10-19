@@ -26,48 +26,20 @@ void Scene::initializeGL() {
     // очищаем поле
     glClearColor(0.1f,0.1f,0.2f,1.0f); //
 
-    // инициализируем шейдеры
-    QOpenGLShader vShader(QOpenGLShader::Vertex);
-    vShader.compileSourceFile(":/Shaders/vShader.glsl");
 
-    QOpenGLShader fShader(QOpenGLShader::Fragment);
-    fShader.compileSourceFile(":/Shaders/fShader.glsl");
+    //создаём объект - треугольник (создаём один, а нарисовать можем много таких-же)
+    //m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
+    m_triangle=new Triangle();
 
-    //добавляем шейдеры в программу
-    m_program.addShader(&vShader);
-    m_program.addShader(&fShader);
-    // линкуем программу и проверяем
-    if (!m_program.link()){
-        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не слинковалась");
-        return; // Хъюстон, у нас проблемы
-    }
-    // устанавливаем привязку между приложением и шейдерами
-    m_vertexAttr=m_program.attributeLocation("vertexAttr");
-    m_colorAttr=m_program.attributeLocation("colorAttr");
-    m_matrixUniform=m_program.uniformLocation("matrix");
-    m_texAttr=m_program.attributeLocation("texAttr");
-    m_texUniform=m_program.attributeLocation("texUniform");
-
-    //создаём объект - треугольник
-    m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
-
-    //создаём сетевую сферу
-    spherepoints=new pointsofsphere(300); // инициализируем массив координат
+    // инициализируем массив координат для сетевой сферы
+    spherepoints=new pointsofsphere(300);
 
     // тест - создаём простую сферу на шейдерах
-    m_shphere=new shphere(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
+    m_shphere=new shphere();
 }
 
 void Scene::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT);
-    //подключаем программу и проверяем
-    if (!m_program.bind()){
-        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не сбиндилась");
-        return;
-    }
-    // убираем искажения текстур
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     //пишем матрицу ориентации
     QMatrix4x4 matrix;
@@ -82,15 +54,22 @@ void Scene::paintGL(){
     matrix.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
     matrix.rotate(m_angle,0.0f,1.0f,0.0f);
-    // устанавливаем матрицу в шейдер
-    m_program.setUniformValue(m_matrixUniform, matrix);
 
-    // вызываем функцию рисования
+    // РИСУЕМ ТРЕУГОЛЬНИК
+    // инициализируем данные программы матрицы и атрибуты
+    m_triangle->init();
+    // зaпихиваем в его программу матрицу ориентации view
+    m_triangle->m_program.setUniformValue(m_triangle->m_matrixUniform, matrix);
+    // вызываем функцию рисования объекта (или объектов в for)
     m_triangle->draw();
+    // проводим сброс инициализации параметров
+    m_triangle->drop();
 
-
-    // очищаем программу
-    m_program.release();
+    //РИСУЕМ СФЕРЫ
+    m_shphere->init();
+    m_shphere->m_program.setUniformValue(m_shphere->m_matrixUniform, matrix);
+    m_shphere->draw();
+    m_shphere->drop();
 }
 
 void Scene::resizeGL(int w, int h){
