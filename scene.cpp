@@ -23,6 +23,9 @@ delete m_triangle;
 }
 
 void Scene::initializeGL() {
+    //
+    qDebug() << QString((const char*)glGetString(GL_VERSION)) << "\n" << QString((const char*)glGetString(GL_VENDOR))<< "\n" << QString((const char*)glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
+
     // очищаем поле
     glClearColor(0.1f,0.1f,0.2f,1.0f); //
 
@@ -84,7 +87,7 @@ void Scene::resizeGL(int w, int h){
 
 void Scene::setStates()
 {
-    //glClearColor(0.25f, 0.25f, 0.5f, 1.0f);
+    // glEnable(GL_BRAINS) // ;)
 
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE); // активирует устранение спрятанных поверхностей.

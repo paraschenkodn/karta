@@ -6,5 +6,7 @@
         <file>Shaders/vShphere.glsl</file>
         <file>Shaders/fShphereOrto.glsl</file>
         <file>Shaders/vShphereOrto.glsl</file>
+        <file>Shaders/frag_shader.glsl</file>
+        <file>Shaders/vert_shader.glsl</file>
     </qresource>
 </RCC>

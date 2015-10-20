@@ -21,14 +21,16 @@ shphere::shphere()
     QOpenGLShader vShader(QOpenGLShader::Vertex);
     //vShader.compileSourceFile(":/Shaders/vShphere.glsl");
     vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
+    //vShader.compileSourceFile(":/Shaders/vert_shader.glsl");
 
     QOpenGLShader fShader(QOpenGLShader::Fragment);
     //fShader.compileSourceFile(":/Shaders/fShphere.glsl");
-    fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
+    //fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
+    fShader.compileSourceFile(":/Shaders/frag_shader.glsl");
 
     //добавляем шейдеры в программу
     m_program.addShader(&vShader);
-    //m_program.addShader(&fShader);
+    m_program.addShader(&fShader);
     // линкуем загруженные в программу шейдеры вместе и проверяем
     if (!m_program.link()){
         qWarning("Хъюстон, у нас проблемы: Шейдерная программа для Шфер не слинковалась");
@@ -37,7 +39,7 @@ shphere::shphere()
     // устанавливаем привязку между приложением и шейдерами  ???зачем???
     // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
     m_vertexAttr=m_program.attributeLocation("vertexAttr");          // координаты точек из массива
-    m_matrixUniform=m_program.uniformLocation("viewport");  // направление просмотра
+    m_matrixUniform=m_program.uniformLocation("viewport");  // область просмотра
     m_colorAttr=m_program.attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
     //m_texAttr=m_program.attributeLocation("texAttr");
     //m_texUniform=m_program.attributeLocation("texUniform");//*/
@@ -77,9 +79,13 @@ void shphere::draw()
       glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
       //*/
 
+      m_program.bind();
       glBegin(GL_POINTS);
+
       glColor3f(0.0f, 1.0f, 0.0f);
+      m_program.setAttributeValue("R", 0.2f); // пока используем статичный радиус
       glVertex3f(0.5f, 0.5f, 0.0f);
+      //qDebug() << m_program.log();
 
       /*glVertexPointer(3, GL_FLOAT, 0, m_vertices.data());
       glColorPointer(3, GL_FLOAT, 0, m_colors.data());
