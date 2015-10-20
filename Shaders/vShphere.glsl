@@ -1,5 +1,3 @@
-#version 120
-
 uniform vec4 viewport;
 attribute float R;
 //attribute highp vec4 vertexAttr; // входной аттрибут для координат вершин

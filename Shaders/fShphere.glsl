@@ -1,5 +1,3 @@
-#version 120
-
 uniform vec4 viewport;
 
 varying mat4 VPMTInverse;
