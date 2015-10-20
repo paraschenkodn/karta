@@ -41,6 +41,9 @@ private:
   QTimer m_timer;
   int m_angle; // текущий угол поворота
 
+  void setLights();
+  void setStates();
+  void defaultStates();
 private slots:
   void slotAnimation();
 };

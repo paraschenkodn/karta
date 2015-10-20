@@ -39,7 +39,13 @@ void Scene::initializeGL() {
 }
 
 void Scene::paintGL(){
-    glClear(GL_COLOR_BUFFER_BIT);
+    setStates();
+    //glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    //qgluPerspective(60.0, width / height, 0.01, 15.0);
+
+    glMatrixMode(GL_MODELVIEW);
 
     //пишем матрицу ориентации
     QMatrix4x4 matrix;
@@ -51,11 +57,11 @@ void Scene::paintGL(){
     // переносим по z дальше
     ///matrix.translate(0.0f,0.0f,-5.0f);
     // изменяем масштаб фигуры (увеличиваем)
-    ///matrix.scale(2.0f);
+    matrix.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
     matrix.rotate(m_angle,0.0f,1.0f,0.0f);
 
-    /*/ РИСУЕМ ТРЕУГОЛЬНИК
+    // РИСУЕМ ТРЕУГОЛЬНИК
     // инициализируем данные программы матрицы и атрибуты
     m_triangle->init();
     // зaпихиваем в его программу матрицу ориентации view
@@ -74,6 +80,69 @@ void Scene::paintGL(){
 
 void Scene::resizeGL(int w, int h){
   glViewport(0,0,w,h);
+}
+
+void Scene::setStates()
+{
+    //glClearColor(0.25f, 0.25f, 0.5f, 1.0f);
+
+    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE); // активирует устранение спрятанных поверхностей.
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);  // было отключено
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_NORMALIZE);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();//*/
+
+    setLights();
+
+    float materialSpecular[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 32.0f);
+}
+
+void Scene::setLights()
+{
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    float lightColour[] = {1.0f, 0.9f, 0.9f, 1.0f};
+    //float lightColour[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    //float lightDir[] = {0.0f, 0.0f, 1.0f, 0.0f};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColour);
+    //glLightfv(GL_LIGHT0, GL_SPECULAR, lightColour);
+    //glLightfv(GL_LIGHT0, GL_POSITION, lightDir);
+    glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
+    glEnable(GL_LIGHT0);
+}
+
+void Scene::defaultStates()
+{
+    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
+    //glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHT0);
+    glDisable(GL_NORMALIZE);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0.0f);
+    float defaultMaterialSpecular[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, defaultMaterialSpecular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)

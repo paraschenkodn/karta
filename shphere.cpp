@@ -28,10 +28,10 @@ shphere::shphere()
 
     //добавляем шейдеры в программу
     m_program.addShader(&vShader);
-    m_program.addShader(&fShader);
+    //m_program.addShader(&fShader);
     // линкуем загруженные в программу шейдеры вместе и проверяем
     if (!m_program.link()){
-        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа для Шфер не слинковалась");
+        qWarning("Хъюстон, у нас проблемы: Шейдерная программа для Шфер не слинковалась");
         return; // Хъюстон, у нас проблемы
     }
     // устанавливаем привязку между приложением и шейдерами  ???зачем???
@@ -49,10 +49,9 @@ void shphere::init()
 {
     //подключаем программу и проверяем
     if (!m_program.bind()){
-        qWarning("Хъюстон, у нас проблемы:\nШейдерная программа не сбиндилась");
+        qWarning("Хъюстон, у нас проблемы: Шейдерная программа не сбиндилась");
         return;
     }
-
 }
 
 void shphere::draw()
@@ -62,28 +61,39 @@ void shphere::draw()
       ///m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
       //m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
       //m_program->setUniformValue(m_texAttr,0);
-      m_program.setAttributeValue("R", 1.0f); // пока используем статичный радиус
+      m_program.setAttributeValue("R", 0.2f); // пока используем статичный радиус
 
       // активируем массивы цветов
       ///m_program.enableAttributeArray(m_vertexAttr);
       ///m_program.enableAttributeArray(m_colorAttr);
       //m_program->enableAttributeArray(m_texAttr);
 
+      /*glUseProgram(m_program.programId());
+      GLfloat viewport[4];
+      glGetFloatv(GL_VIEWPORT, viewport);
+      glUniform4fv(m_matrixUniform, 1, viewport);//*/
+
       // рисуем точки
-      const float light0_position[4] = {1,1,1,0};
-      glEnable(GL_COLOR_MATERIAL);
-      glEnable(GL_DEPTH_TEST);
-      glEnable(GL_LIGHTING);
-      glEnable(GL_LIGHT0);
-      glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
       glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
       //*/
 
-      ///glDrawArrays(GL_POINTS,0,m_vertices.size()/3);
       glBegin(GL_POINTS);
       glColor3f(0.0f, 1.0f, 0.0f);
-      glVertex3f(0.0f, 0.0f, 0.0f);
+      glVertex3f(0.5f, 0.5f, 0.0f);
+
+      /*glVertexPointer(3, GL_FLOAT, 0, m_vertices.data());
+      glColorPointer(3, GL_FLOAT, 0, m_colors.data());
+      glEnableClientState(GL_VERTEX_ARRAY);
+      glEnableClientState(GL_COLOR_ARRAY);//*/
+
+      //glDrawArrays(GL_POINTS,0,m_vertices.size()/3);
+
+      /*glDisableClientState(GL_COLOR_ARRAY);
+      glDisableClientState(GL_VERTEX_ARRAY);//*/
+
       glEnd();//*/
+
+      //glUseProgram(0);
 
       // деактивируем массивы
       ///m_program.disableAttributeArray(m_vertexAttr);
