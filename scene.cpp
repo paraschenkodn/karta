@@ -42,8 +42,8 @@ void Scene::initializeGL() {
 }
 
 void Scene::paintGL(){
-    //setStates();
-    //glClear(GL_COLOR_BUFFER_BIT);
+    setStates();                    // включаем буфер глубины, свет и прочее (возможно можно вынести в initGL)
+    //glClear(GL_COLOR_BUFFER_BIT); // если включен буфер глубины, то без его очистки мы ничего не увидим
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glMatrixMode(GL_PROJECTION);
     //qgluPerspective(60.0, width / height, 0.01, 15.0);
@@ -89,7 +89,7 @@ void Scene::setStates()
 {
     // glEnable(GL_BRAINS) // ;)
 
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);  // без этого у нас не будет эффекта глубины (включаем буфер глубины)
     //glEnable(GL_CULL_FACE); // активирует устранение спрятанных поверхностей.
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);  // было отключено
