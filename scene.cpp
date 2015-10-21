@@ -42,33 +42,33 @@ void Scene::initializeGL() {
 }
 
 void Scene::paintGL(){
-    setStates();
+    //setStates();
     //glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
+    //glMatrixMode(GL_PROJECTION);
     //qgluPerspective(60.0, width / height, 0.01, 15.0);
 
-    glMatrixMode(GL_MODELVIEW);
+    //glMatrixMode(GL_MODELVIEW);
 
     //пишем матрицу ориентации
-    QMatrix4x4 matrix;
+    QMatrix4x4 viewport;
     // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
     // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-    ///matrix.perspective(60.0f,3.0f/4.0f,0.1f,400.0f);
+    ///viewport.perspective(60.0f,3.0f/4.0f,0.1f,400.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
-    matrix.ortho(-2.0f,2.0f,-2.0f,2.0f,2.0f,-2.0f);
+    viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,3.0f,-3.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
     // переносим по z дальше
-    ///matrix.translate(0.0f,0.0f,-5.0f);
+    ///viewport.translate(0.0f,0.0f,-5.0f);
     // изменяем масштаб фигуры (увеличиваем)
-    matrix.scale(2.0f);
+    viewport.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
-    matrix.rotate(m_angle,0.0f,1.0f,0.0f);
+    viewport.rotate(m_angle,0.0f,1.0f,0.0f);
 
-    /*/ РИСУЕМ ТРЕУГОЛЬНИК
+    // РИСУЕМ ТРЕУГОЛЬНИК
     // инициализируем данные программы матрицы и атрибуты
     m_triangle->init();
     // зaпихиваем в его программу матрицу ориентации view
-    m_triangle->m_program.setUniformValue(m_triangle->m_matrixUniform, matrix);
+    m_triangle->m_program.setUniformValue(m_triangle->m_matrixUniform, viewport);
     // вызываем функцию рисования объекта (или объектов в for)
     m_triangle->draw();
     // проводим сброс инициализации параметров
@@ -76,9 +76,9 @@ void Scene::paintGL(){
 
     //РИСУЕМ СФЕРЫ
     m_shphere->init();
-    m_shphere->m_program.setUniformValue(m_shphere->m_matrixUniform, matrix);
+    m_shphere->m_program.setUniformValue(m_shphere->m_matrixUniform, viewport);
     m_shphere->draw();
-    m_shphere->drop();
+    m_shphere->drop();//*/
 }
 
 void Scene::resizeGL(int w, int h){
@@ -96,13 +96,17 @@ void Scene::setStates()
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_NORMALIZE);
 
-    glMatrixMode(GL_PROJECTION);
+    /*/ формирование пирамиды видимости:
+    glMatrixMode(GL_PROJECTION);    // Матрица проекции
+    glPushMatrix();                 //
+    glLoadIdentity();               // задание единичной матрицы (установки текущей матрицы в единичную)
+    // glFrustum( xmin, xmax, ymin, ymax, near, far) // функция задания перспективы
+    // glViewport(0, 0, ClientWidth, ClientHeight); // Задание области вывода
+    glMatrixMode(GL_MODELVIEW);     //Переключение на матрицу модели.
     glPushMatrix();
     glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();//*/
+    //InvalidateRect(Handle, nil, False);// Перерисовка окна
+    //*/
 
     setLights();
 

@@ -47,7 +47,7 @@ Triangle::Triangle():
     // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
     m_vertexAttr=m_program.attributeLocation("vertexAttr");
     m_colorAttr=m_program.attributeLocation("colorAttr");
-    m_matrixUniform=m_program.uniformLocation("matrix");
+    m_matrixUniform=m_program.uniformLocation("viewport");
     m_texAttr=m_program.attributeLocation("texAttr");
     m_texUniform=m_program.attributeLocation("texUniform");//*/
 
@@ -85,7 +85,7 @@ void Triangle::draw()   // draw(*allcoords); // vertex, color, textures
     // активируем массивы
     m_program.enableAttributeArray(m_vertexAttr);
     m_program.enableAttributeArray(m_colorAttr);
-    m_program.enableAttributeArray(m_texAttr);
+    m_program.enableAttributeArray(m_texAttr);//*/
 
     // рисуем треугольник
     glDrawArrays(GL_TRIANGLES,0,m_vertices.size()/3);
