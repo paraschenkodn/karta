@@ -20,14 +20,14 @@ shphere::shphere()
     // инициализируем шейдеры
     QOpenGLShader vShader(QOpenGLShader::Vertex);
     //vShader.compileSourceFile(":/Shaders/vShphere.glsl");
-    vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
-    //vShader.compileSourceFile(":/Shaders/vert_shader.glsl");
-    //vShader.compileSourceFile(":/Shaders/vShader.glsl");
+    //vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
+    vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
 
     QOpenGLShader fShader(QOpenGLShader::Fragment);
     //fShader.compileSourceFile(":/Shaders/fShphere.glsl");
     //fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
-    fShader.compileSourceFile(":/Shaders/frag_shader.glsl");
+    //fShader.compileSourceFile(":/Shaders/frag_shader.glsl");
+    fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
 
     //добавляем шейдеры в программу
     m_program.addShader(&vShader);

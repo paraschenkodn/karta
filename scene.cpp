@@ -54,11 +54,11 @@ void Scene::paintGL(){
     QMatrix4x4 viewport;
     // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
     // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-    ///viewport.perspective(60.0f,3.0f/4.0f,0.1f,400.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+    viewport.perspective(60.0f,width()/height(),0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
-    viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,3.0f,-3.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
-    // переносим по z дальше
-    ///viewport.translate(0.0f,0.0f,-5.0f);
+    ///viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,3.0f,-3.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
+    // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
+    viewport.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка.
     // изменяем масштаб фигуры (увеличиваем)
     viewport.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
@@ -119,11 +119,13 @@ void Scene::setLights()
 {
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     float lightColour[] = {1.0f, 0.9f, 0.9f, 1.0f};
-    //float lightColour[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    //float lightDir[] = {0.0f, 0.0f, 1.0f, 0.0f};
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColour);
+
+    ///glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColour);
+
+    float lightDir[] = {1.0f, 1.0f, 1.0f, 0.0f};
     //glLightfv(GL_LIGHT0, GL_SPECULAR, lightColour);
-    //glLightfv(GL_LIGHT0, GL_POSITION, lightDir);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightDir);
+
     glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
     glEnable(GL_LIGHT0);
 }

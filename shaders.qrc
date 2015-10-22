@@ -8,5 +8,7 @@
         <file>Shaders/vShphereOrto.glsl</file>
         <file>Shaders/frag_shader.glsl</file>
         <file>Shaders/vert_shader.glsl</file>
+        <file>Shaders/fShphereProection.glsl</file>
+        <file>Shaders/vShphereProection.glsl</file>
     </qresource>
 </RCC>
