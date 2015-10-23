@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "mainwindow.h"
 
 #include <QMatrix4x4>
 
@@ -6,7 +7,8 @@ const float step=0.01f; // шаг сдвига
 
 Scene::Scene(QWidget *parent) :
     QOpenGLWidget (parent),
-    m_angle(0)
+    m_angle(0),
+    perspective(false)
 {
   // задаём для виджета фокус, чтобы оно реагировало на кнопки
   this->setFocusPolicy(Qt::StrongFocus);
@@ -14,6 +16,9 @@ Scene::Scene(QWidget *parent) :
   connect(&m_timer,SIGNAL(timeout()),this,SLOT(slotAnimation()));
   // запускаем таймер
   m_timer.start(20);
+  // подключаем меню
+  //connect(&MainWindow.ui,SIGNAL(action()),this,SLOT(setPerspective()));
+  //connect(&m_timer,SIGNAL(timeout()),this,SLOT(slotAnimation()));
 }
 
 Scene::~Scene()
@@ -39,6 +44,10 @@ void Scene::initializeGL() {
 
     // тест - создаём простую сферу на шейдерах
     m_shphere=new shphere();
+    if (perspective)
+        m_shphere->setPerspective();
+            else
+    m_shphere->setOrthogonal();
 }
 
 void Scene::paintGL(){
@@ -52,13 +61,18 @@ void Scene::paintGL(){
 
     //пишем матрицу ориентации
     QMatrix4x4 viewport;
-    // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
-    // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-    viewport.perspective(60.0f,width()/height(),0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
-    // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
-    ///viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,3.0f,-3.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
-    // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
-    viewport.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка.
+    if (perspective) {
+        // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
+        // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
+        viewport.perspective(60.0f,width()/height(),0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+    }
+    else {
+        // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
+        viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,3.0f,-3.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
+        // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
+    }
+    if (perspective)
+        viewport.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка. // ??? почему не работает в ортогональной проекции???
     // изменяем масштаб фигуры (увеличиваем)
     viewport.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
@@ -76,7 +90,7 @@ void Scene::paintGL(){
 
     //РИСУЕМ СФЕРЫ
     m_shphere->init();
-    m_shphere->m_program.setUniformValue(m_shphere->m_matrixUniform, viewport);
+    m_shphere->m_program->setUniformValue(m_shphere->m_matrixUniform, viewport);
     m_shphere->draw();
     m_shphere->drop();//*/
 }
@@ -152,6 +166,18 @@ void Scene::defaultStates()
     float defaultMaterialSpecular[] = {0.0f, 0.0f, 0.0f, 1.0f};
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, defaultMaterialSpecular);
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
+}
+
+void Scene::setOrthogonal()
+{
+    perspective=false;
+    m_shphere->setOrthogonal();
+}
+
+void Scene::setPerspective()
+{
+    perspective=true;
+    m_shphere->setPerspective();
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)

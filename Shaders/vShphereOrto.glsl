@@ -28,3 +28,4 @@ gl_PointSize = R * min(viewport2.z, viewport2.w); //100;  // величина в
 center = gl_Position.xy;
 radius = R;
 }
+

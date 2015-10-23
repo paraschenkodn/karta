@@ -20,30 +20,32 @@ shphere::shphere()
     // инициализируем шейдеры
     QOpenGLShader vShader(QOpenGLShader::Vertex);
     //vShader.compileSourceFile(":/Shaders/vShphere.glsl");
-    //vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
-    vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
 
     QOpenGLShader fShader(QOpenGLShader::Fragment);
     //fShader.compileSourceFile(":/Shaders/fShphere.glsl");
-    //fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
-    //fShader.compileSourceFile(":/Shaders/frag_shader.glsl");
-    fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
 
-    //добавляем шейдеры в программу
-    m_program.addShader(&vShader);
-    m_program.addShader(&fShader);
+    //добавляем шейдеры в программу для ортогональной проекции
+    vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
+    fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
+    m_programO.addShader(&vShader);
+    m_programO.addShader(&fShader);
     // линкуем загруженные в программу шейдеры вместе и проверяем
-    if (!m_program.link()){
+    if (!m_programO.link()){
         qWarning("Хъюстон, у нас проблемы: Шейдерная программа для Шфер не слинковалась");
         return; // Хъюстон, у нас проблемы
     }
-    // устанавливаем привязку между приложением и шейдерами  ???зачем???
-    // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
-    m_vertexAttr=m_program.attributeLocation("vertexAttr");          // координаты точек из массива
-    m_matrixUniform=m_program.uniformLocation("viewport");  // область просмотра
-    m_colorAttr=m_program.attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
-    //m_texAttr=m_program.attributeLocation("texAttr");
-    //m_texUniform=m_program.attributeLocation("texUniform");//*/
+    /*/добавляем шейдеры в программу для перспективной проеции
+    vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
+    fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
+    m_programO.addShader(&vShader);
+    m_programO.addShader(&fShader);
+    if (!m_programO.link()){
+        qWarning("Шейдерная программа для перспективы не слинковалась");
+        return;
+    }
+    //setOrthogonal(); // инициализируем на всякий случай, переопределяется в Scene::initializeGL()
+    setPerspective();//*/
+
     initVertices();
     initColors();
 }
@@ -51,7 +53,7 @@ shphere::shphere()
 void shphere::init()
 {
     //подключаем программу (glUseProgram) и проверяем
-    if (!m_program.bind()){
+    if (!m_program->bind()){
         qWarning("Хъюстон, у нас проблемы: Шейдерная программа не сбиндилась");
         return;
     }
@@ -60,15 +62,15 @@ void shphere::init()
 void shphere::draw()
 {
    // устанавливаем место хранения координат
-      m_program.setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
-      m_program.setAttributeArray(m_colorAttr, m_colors.data(), 3);
+      m_program->setAttributeArray(m_vertexAttr, m_vertices.data(), 3);
+      m_program->setAttributeArray(m_colorAttr, m_colors.data(), 3);
       //m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
       //m_program->setUniformValue(m_texAttr,0);
-      m_program.setAttributeValue("R", 0.1f); // пока используем статичный радиус
+      m_program->setAttributeValue("R", 0.1f); // пока используем статичный радиус
 
       // активируем массивы цветов
-      m_program.enableAttributeArray(m_vertexAttr);
-      m_program.enableAttributeArray(m_colorAttr);
+      m_program->enableAttributeArray(m_vertexAttr);
+      m_program->enableAttributeArray(m_colorAttr);
       //m_program->enableAttributeArray(m_texAttr);
       //qDebug() << m_program.log();
 
@@ -77,7 +79,7 @@ void shphere::draw()
       glGetFloatv(GL_VIEWPORT, viewport2);
       //glUniform4fv(m_program.programId(),1,viewport2);
       QVector4D viewport(viewport2[0],viewport2[1],viewport2[2],viewport2[3]);
-      m_program.setUniformValue("viewport2",viewport);
+      m_program->setUniformValue("viewport2",viewport);
 
       // рисуем точки
       glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);   // говорим что будут меняться размеры точек в шейдере
@@ -87,15 +89,15 @@ void shphere::draw()
       glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
       // деактивируем массивы
-      m_program.disableAttributeArray(m_vertexAttr);
-      m_program.disableAttributeArray(m_colorAttr);
+      m_program->disableAttributeArray(m_vertexAttr);
+      m_program->disableAttributeArray(m_colorAttr);
       //m_program->disableAttributeArray(m_texAttr);//*/
 }
 
 void shphere::drop()
 {
     // очищаем программу
-    m_program.release();
+    m_program->release();
 }
 
 void shphere::initVertices()   // инициализация вектора точек
@@ -136,5 +138,29 @@ void shphere::initColors()
     m_colors[6] = 0.0f;
     m_colors[7] = 0.0f;
     m_colors[8] = 1.0f;
+}
+
+void shphere::setOrthogonal()
+{
+    m_program=&m_programO;
+    // устанавливаем привязку между приложением и шейдерами  ???зачем???
+    // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
+    m_vertexAttr=m_program->attributeLocation("vertexAttr");          // координаты точек из массива
+    m_matrixUniform=m_program->uniformLocation("viewport");  // область просмотра
+    m_colorAttr=m_program->attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
+    //m_texAttr=m_program->attributeLocation("texAttr");
+    //m_texUniform=m_program->attributeLocation("texUniform");//*/
+}
+
+void shphere::setPerspective()
+{
+    m_program=&m_programP;
+    // устанавливаем привязку между приложением и шейдерами  ???зачем???
+    // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
+    m_vertexAttr=m_program->attributeLocation("vertexAttr");          // координаты точек из массива
+    m_matrixUniform=m_program->uniformLocation("viewport");  // область просмотра
+    m_colorAttr=m_program->attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
+    //m_texAttr=m_program->attributeLocation("texAttr");
+    //m_texUniform=m_program->attributeLocation("texUniform");//*/
 }
 

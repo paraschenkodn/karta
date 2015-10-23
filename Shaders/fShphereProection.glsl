@@ -1,3 +1,4 @@
+#version 120
 uniform vec4 viewport2;
 
 varying mat4 VPMTInverse;

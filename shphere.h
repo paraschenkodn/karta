@@ -11,8 +11,12 @@ public:
     void init();
     void draw(); // рисуем сферу (шейдерами)
     void drop();
+    // устанавливаем признак рисования в ортогональной проекции
+    void setOrthogonal();
+    // устанавливаем признак рисования в перспективной проекции
+    void setPerspective();
 
-    QOpenGLShaderProgram m_program;
+    QOpenGLShaderProgram *m_program, m_programO, m_programP;
     //GLuint m_progID;
     int m_vertexAttr;
     int m_colorAttr;

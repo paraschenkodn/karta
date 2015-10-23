@@ -27,6 +27,8 @@
     <property name="title">
      <string>Karta</string>
     </property>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
    </widget>
    <addaction name="menuKarta"/>
   </widget>
@@ -39,6 +41,22 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ортогональная проекция</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Перспективная проекция</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

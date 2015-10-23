@@ -44,7 +44,15 @@ private:
   void setLights();
   void setStates();
   void defaultStates();
+
+  bool perspective;  // признак рисования в перспективной или в ортогональной проекции
+public slots:
+  // устанавливаем признак рисования в ортогональной проекции
+  void setOrthogonal();
+  // устанавливаем признак рисования в перспективной проекции
+  void setPerspective();
 private slots:
+  // заставляем прорисовываться по таймеру
   void slotAnimation();
 };
 
