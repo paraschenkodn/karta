@@ -27,6 +27,8 @@ shphere::shphere()
     //добавляем шейдеры в программу для ортогональной проекции
     vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
     fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
+    //vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
+    //fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
     m_programO.addShader(&vShader);
     m_programO.addShader(&fShader);
     // линкуем загруженные в программу шейдеры вместе и проверяем
@@ -34,17 +36,18 @@ shphere::shphere()
         qWarning("Хъюстон, у нас проблемы: Шейдерная программа для Шфер не слинковалась");
         return; // Хъюстон, у нас проблемы
     }
-    /*/добавляем шейдеры в программу для перспективной проеции
+    //setOrthogonal(); // инициализируем на всякий случай, переопределяется в Scene::initializeGL()
+
+    //добавляем шейдеры в программу для перспективной проеции
     vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
     fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
-    m_programO.addShader(&vShader);
-    m_programO.addShader(&fShader);
-    if (!m_programO.link()){
+    m_programP.addShader(&vShader);
+    m_programP.addShader(&fShader);
+    if (!m_programP.link()){
         qWarning("Шейдерная программа для перспективы не слинковалась");
         return;
     }
-    //setOrthogonal(); // инициализируем на всякий случай, переопределяется в Scene::initializeGL()
-    setPerspective();//*/
+    //setPerspective();//*/ // инициализируем на всякий случай, переопределяется в Scene::initializeGL()
 
     initVertices();
     initColors();
