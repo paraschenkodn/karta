@@ -8,6 +8,8 @@
 #include <QOpenGLShaderProgram>
 #include <QKeyEvent>
 #include <QTimer>
+#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_0>
 
 class Scene : public QOpenGLWidget
 {

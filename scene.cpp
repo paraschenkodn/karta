@@ -8,7 +8,7 @@ const float step=0.01f; // шаг сдвига
 Scene::Scene(QWidget *parent) :
     QOpenGLWidget (parent),
     m_angle(0),
-    perspective(true)
+    perspective(false)
 {
   // задаём для виджета фокус, чтобы оно реагировало на кнопки
   this->setFocusPolicy(Qt::StrongFocus);
@@ -28,12 +28,48 @@ delete m_triangle;
 }
 
 void Scene::initializeGL() {
+    // Tell Qt we will use OpenGL for this window
+    //setSurfaceType( OpenGLSurface ); //for QWindow
+
+    // Specify the format and create platform-specific surface
+    QSurfaceFormat format;
+    format.setDepthBufferSize( 24 );
+    format.setMajorVersion( 3 );
+    format.setMinorVersion( 0 );
+    format.setSamples( 4 );
+    format.setProfile( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile );
+    setFormat( format );
+    makeCurrent();
+
+    // Create an OpenGL context
+        QOpenGLContext *m_context = new QOpenGLContext;
+        m_context->setFormat( format );
+        m_context->create();
+
+        // Make the context current on this window
+        m_context->makeCurrent( this );//*/
+
+    // Set up the rendering context, load shaders and other resources, etc.:
+            //QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+            QOpenGLFunctions_3_0 *f;
+        //QOpenGLFunctions_3_1 *f = QOpenGLContext::currentContext()->versionFunctions();
+            f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_0>();
+                if ( !f ) {
+                    qWarning( "Could not obtain OpenGL versions object&quot" );
+                    exit( 1 );
+                }
+            f->initializeOpenGLFunctions();
+            f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
     //
-    qDebug() << QString((const char*)glGetString(GL_VERSION)) << "\n" << QString((const char*)glGetString(GL_VENDOR))<< "\n" << QString((const char*)glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
+    qDebug() << QString((const char*)f->glGetString(GL_VERSION)) << "\n" << QString((const char*)f->glGetString(GL_VENDOR))<< "\n" << QString((const char*)f->glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
+
+    QSurfaceFormat pformat=QOpenGLContext::currentContext()->format();
+    qDebug() << "Version format= " << pformat.majorVersion() << " " << pformat.minorVersion();
 
     // очищаем поле
-    glClearColor(0.1f,0.1f,0.2f,1.0f); //
-
+    //glClearColor(0.1f,0.1f,0.2f,1.0f); // тёмно-синенький
+    f->glClearColor(0.1f,0.1f,0.2f,1.0f); //
 
     //создаём объект - треугольник (создаём один, а нарисовать можем много таких-же)
     //m_triangle=new Triangle(&m_program, m_vertexAttr, m_colorAttr, m_texAttr, m_texUniform);
@@ -92,6 +128,12 @@ void Scene::paintGL(){
     m_shphere->m_program->setUniformValue(m_shphere->m_matrixUniform, viewport);
     m_shphere->draw();
     m_shphere->drop();//*/
+
+    //рисуем точку
+    glBegin(GL_POINT);
+    glColor3f(1.0,1.0,0.0);
+    glVertex4f(0.5,0.5,0.0,1.0);
+    glEnd();
 }
 
 void Scene::resizeGL(int w, int h){
