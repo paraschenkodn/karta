@@ -1,3 +1,5 @@
+#version 120
+
 varying lowp vec4 color;  // входная переменная (переданная из вершинного шейдера)
 
 uniform vec4 viewport2;

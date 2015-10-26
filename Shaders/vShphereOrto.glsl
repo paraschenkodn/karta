@@ -1,3 +1,4 @@
+#version 120
 attribute highp vec4 vertexAttr;
 uniform mediump mat4 viewport;
 attribute lowp vec4 colorAttr;

@@ -47,7 +47,7 @@ void Scene::initializeGL() {
         m_context->create();
 
         // Make the context current on this window
-        m_context->makeCurrent( this );//*/
+        //m_context->makeCurrent( this );//*/
 
     // Set up the rendering context, load shaders and other resources, etc.:
             //QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();

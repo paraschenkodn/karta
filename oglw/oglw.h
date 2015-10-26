@@ -7,7 +7,7 @@
 #include <QCoreApplication> //*/
 
 //#include <QtGui/QOpenGLFunctions>
-#include <QOpenGLFunctions_3_1>
+#include <QOpenGLFunctions_3_0>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QPainter>
@@ -31,7 +31,7 @@ public:
 
   void setAnimating(bool animating);      // ???
 
-  QOpenGLFunctions_3_3_Core * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
+  QOpenGLFunctions_3_0 * m_funcs;    /// объявляем точку для обращения к функциям конкретной версии OpenGL (мы ведь хотим пользоваться последней?)
                                           /// Если бы нам требовалась совместимость мы могли бы просто использовать ... ", protected QOpenGLFunctions"  в объявлении
                                           /// класса и не объявлять данную переменную.
 public slots:
