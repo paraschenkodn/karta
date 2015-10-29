@@ -2,7 +2,8 @@
 attribute highp vec4 vertexAttr;
 uniform mediump mat4 viewport;  // gl_ModelViewProjectionMatrix
 attribute lowp vec4 colorAttr;
-attribute float R;
+//attribute float R;
+uniform float R;
 uniform vec4 viewport2; // камера ??
 //out int pointsize; // output for debug
 

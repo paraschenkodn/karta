@@ -20,9 +20,9 @@ void main(void) {
         vec3 n = vec3(ndc_current_pixel-center.xy, dr);
         float intensity = .2 + max(dot(l,normalize(n)), 0.0);
         gl_FragColor = gl_Color*intensity;
-        //gl_FragDepth = gl_FragCoord.z + dr*gl_DepthRange.diff/2.0*gl_ProjectionMatrix[2].z;
         gl_FragDepth =  gl_FragCoord.z - dr*gl_DepthRange.diff/2.0*gl_ProjectionMatrix[2].z;
     }
+    //gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 }
 
 //Модель диффузного освещения

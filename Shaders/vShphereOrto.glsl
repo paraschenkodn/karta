@@ -2,7 +2,9 @@
 attribute highp vec4 vertexAttr;
 uniform mediump mat4 viewport;
 attribute lowp vec4 colorAttr;
-attribute float R;
+//attribute float R; // В картах ATI "левые" переменные для вычислений принимаются только через uniform
+uniform float R;
+//uniform vec4 R;
 uniform vec4 viewport2;
 //out int pointsize; // output for debug
 

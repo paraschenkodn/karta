@@ -27,8 +27,8 @@ shphere::shphere()
     //добавляем шейдеры в программу для ортогональной проекции
     vShader.compileSourceFile(":/Shaders/vShphereOrto.glsl");
     fShader.compileSourceFile(":/Shaders/fShphereOrto.glsl");
-    //vShader.compileSourceFile(":/Shaders/vShphereProection.glsl");
-    //fShader.compileSourceFile(":/Shaders/fShphereProection.glsl");
+    //vShader.compileSourceFile(":/Shaders/vShader.glsl");
+    //fShader.compileSourceFile(":/Shaders/fShader.glsl");
     m_programO.addShader(&vShader);
     m_programO.addShader(&fShader);
     // линкуем загруженные в программу шейдеры вместе и проверяем
@@ -69,7 +69,9 @@ void shphere::draw()
       m_program->setAttributeArray(m_colorAttr, m_colors.data(), 3);
       //m_program->setAttributeArray(m_texAttr, m_texcoords.data(), 2);
       //m_program->setUniformValue(m_texAttr,0);
-      m_program->setAttributeValue("R", 0.1f); // пока используем статичный радиус
+
+      //m_program->setAttributeValue("R",R); // пока используем статичный радиус
+      m_program->setUniformValue("R",0.1f); // пока используем статичный радиус
 
       // активируем массивы цветов
       m_program->enableAttributeArray(m_vertexAttr);

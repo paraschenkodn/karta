@@ -15,10 +15,8 @@ void main(void) {
 
     float square = xpPrimeTDc3*xpPrimeTDc3 - c3TDc3*xpPrimeTDxpPrime;
 
-    //vec2 ndc_current_pixel = ((2.0 * gl_FragCoord.xy) - (2.0 * viewport2.xy)) / (viewport2.zw) - 1;
-
     gl_FragColor = gl_Color;
-
+    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
     if (square<0.0) {
         //discard;
     } else {
@@ -32,4 +30,5 @@ void main(void) {
         float intensity = .2 + max(dot(lightDir,normalize(pointnormclip-centernormclip)), 0.0);
         gl_FragColor = intensity*gl_Color;
     }
+    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 }

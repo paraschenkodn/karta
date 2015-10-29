@@ -16,10 +16,11 @@ Scene::Scene(QWidget *parent) :
   // запускаем таймер
   m_timer.start(20);
 
-  /*/ Specify the format and create platform-specific surface
+  /*/ Specify the format and create platform-specific surface // В ATI ломает рисовку
   QSurfaceFormat format;
   format.setDepthBufferSize( 24 );
   format.setSamples( 4 );
+  format.setStencilBufferSize(8);
   //format.setVersion(2,0);
   //format.setProfile( QSurfaceFormat::CompatibilityProfile );//( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile ); //// ( QSurfaceFormat::CompatibilityProfile )
   setFormat( format );//*/
@@ -70,6 +71,7 @@ void Scene::initializeGL() {
 
 void Scene::paintGL(){
     setStates();                    // включаем буфер глубины, свет и прочее (возможно можно вынести в initGL)
+
     //glClear(GL_COLOR_BUFFER_BIT); // если включен буфер глубины, то без его очистки мы ничего не увидим
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glMatrixMode(GL_PROJECTION);
@@ -86,7 +88,7 @@ void Scene::paintGL(){
     }
     else {
         // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
-        viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,8.0f,-8.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
+        viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,-8.0f,8.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
         // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
     }
     viewport.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка. // не работает в ортогональной проекции если перенести слишком далеко, за пределы куба отсечения
@@ -111,11 +113,6 @@ void Scene::paintGL(){
     m_shphere->draw();
     m_shphere->drop();//*/
 
-    //рисуем точку
-    glBegin(GL_POINT);
-    glColor3f(1.0,1.0,0.0);
-    glVertex4f(0.5,0.5,0.0,1.0);
-    glEnd();
 }
 
 void Scene::resizeGL(int w, int h){
@@ -126,24 +123,14 @@ void Scene::setStates()
 {
     // glEnable(GL_BRAINS) // ;)
 
+    // glEnable(GL_BLEND); // На старых картах ATI вызывает проблемы в шейдере
+
     glEnable(GL_DEPTH_TEST);  // без этого у нас не будет эффекта глубины (включаем буфер глубины)
     //glEnable(GL_CULL_FACE); // активирует устранение спрятанных поверхностей.
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);  // было отключено
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_NORMALIZE);
-
-    /*/ формирование пирамиды видимости:
-    glMatrixMode(GL_PROJECTION);    // Матрица проекции
-    glPushMatrix();                 //
-    glLoadIdentity();               // задание единичной матрицы (установки текущей матрицы в единичную)
-    // glFrustum( xmin, xmax, ymin, ymax, near, far) // функция задания перспективы
-    // glViewport(0, 0, ClientWidth, ClientHeight); // Задание области вывода
-    glMatrixMode(GL_MODELVIEW);     //Переключение на матрицу модели.
-    glPushMatrix();
-    glLoadIdentity();
-    //InvalidateRect(Handle, nil, False);// Перерисовка окна
-    //*/
 
     setLights();
 
