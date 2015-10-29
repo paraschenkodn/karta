@@ -8,7 +8,7 @@ uniform vec4 viewport2;
 
 // for orto proection
 varying float radius;
-varying vec2  center;
+varying vec3  center;
 
 // for perspective proection
 varying mat4 VPMTInverse;
@@ -26,7 +26,7 @@ gl_FrontColor = colorAttr;
 color = colorAttr;
 gl_PointSize = R * min(viewport2.z, viewport2.w); //100;  // величина в пикселях экрана
 
-center = gl_Position.xy;
+center = gl_Position.xyz;
 radius = R;
 }
 

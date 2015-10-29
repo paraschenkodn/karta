@@ -3,7 +3,7 @@ attribute highp vec4 vertexAttr;
 uniform mediump mat4 viewport;  // gl_ModelViewProjectionMatrix
 attribute lowp vec4 colorAttr;
 attribute float R;
-uniform vec4 viewport2;
+uniform vec4 viewport2; // камера ??
 //out int pointsize; // output for debug
 
 // for perspective proection
@@ -24,9 +24,8 @@ gl_FrontColor = colorAttr;
             0.0, 0.0, 1.0, 0.0,
             vertexAttr.x/R, vertexAttr.y/R, vertexAttr.z/R, 1.0/R);
 
-    mat4 PMTt = transpose(gl_ModelViewProjectionMatrix * T);
-
-    //mat4 PMTt = transpose(viewport * T);
+    //mat4 PMTt = transpose(gl_ModelViewProjectionMatrix * T);
+    mat4 PMTt = transpose(viewport * T);
 
     vec4 r1 = PMTt[0];
     vec4 r2 = PMTt[1];
@@ -58,8 +57,14 @@ gl_FrontColor = colorAttr;
             0.0, 2.0/float(viewport2.w), 0.0, 0.0,
             0.0, 0.0,                   2.0/gl_DepthRange.diff, 0.0,
             -float(viewport2.z+2.0*viewport2.x)/float(viewport2.z), -float(viewport2.w+2.0*viewport2.y)/float(viewport2.w), -(gl_DepthRange.near+gl_DepthRange.far)/gl_DepthRange.diff, 1.0);
+
     VPMTInverse = TInverse*gl_ModelViewProjectionMatrixInverse*VInverse;
+    //VPMTInverse = TInverse*viewport*VInverse;
+
     VPInverse = gl_ProjectionMatrixInverse*VInverse; // TODO: move to CPU
+    //VPInverse = viewport*VInverse; // TODO: move to CPU
+
     vec4 centerclip = gl_ModelViewMatrix*vertexAttr;
+    //vec4 centerclip = viewport*vertexAttr;
     centernormclip = vec3(centerclip)/centerclip.w;
 }

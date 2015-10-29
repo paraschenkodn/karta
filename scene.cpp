@@ -1,5 +1,4 @@
 #include "scene.h"
-#include "mainwindow.h"
 
 #include <QMatrix4x4>
 
@@ -16,9 +15,6 @@ Scene::Scene(QWidget *parent) :
   connect(&m_timer,SIGNAL(timeout()),this,SLOT(slotAnimation()));
   // запускаем таймер
   m_timer.start(20);
-  // подключаем меню
-  //connect(&MainWindow.ui,SIGNAL(action()),this,SLOT(setPerspective()));
-  //connect(&m_timer,SIGNAL(timeout()),this,SLOT(slotAnimation()));
 }
 
 Scene::~Scene()
@@ -34,12 +30,11 @@ void Scene::initializeGL() {
     // Specify the format and create platform-specific surface
     QSurfaceFormat format;
     format.setDepthBufferSize( 24 );
-    format.setMajorVersion( 3 );
-    format.setMinorVersion( 0 );
     format.setSamples( 4 );
-    format.setProfile( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile );
+    //format.setVersion(3,1);
+    //format.setProfile( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile ); //// ( QSurfaceFormat::CompatibilityProfile )
     setFormat( format );
-    makeCurrent();
+    //makeCurrent();
 
     // Create an OpenGL context
         QOpenGLContext *m_context = new QOpenGLContext;
