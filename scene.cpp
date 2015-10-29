@@ -15,52 +15,39 @@ Scene::Scene(QWidget *parent) :
   connect(&m_timer,SIGNAL(timeout()),this,SLOT(slotAnimation()));
   // запускаем таймер
   m_timer.start(20);
+
+  /*/ Specify the format and create platform-specific surface
+  QSurfaceFormat format;
+  format.setDepthBufferSize( 24 );
+  format.setSamples( 4 );
+  //format.setVersion(2,0);
+  //format.setProfile( QSurfaceFormat::CompatibilityProfile );//( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile ); //// ( QSurfaceFormat::CompatibilityProfile )
+  setFormat( format );//*/
 }
 
 Scene::~Scene()
 {
+makeCurrent();      // тут используется текущий контекст системы, т.к. QOpenGLWidget::currentContext() уже нет
 delete m_triangle;
     delete spherepoints;
+doneCurrent();
 }
 
 void Scene::initializeGL() {
-    // Tell Qt we will use OpenGL for this window
-    //setSurfaceType( OpenGLSurface ); //for QWindow
-
-    // Specify the format and create platform-specific surface
-    QSurfaceFormat format;
-    format.setDepthBufferSize( 24 );
-    format.setSamples( 4 );
-    //format.setVersion(3,1);
-    //format.setProfile( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile ); //// ( QSurfaceFormat::CompatibilityProfile )
-    setFormat( format );
-    //makeCurrent();
-
-    // Create an OpenGL context
-        QOpenGLContext *m_context = new QOpenGLContext;
-        m_context->setFormat( format );
-        m_context->create();
-
-        // Make the context current on this window
-        //m_context->makeCurrent( this );//*/
-
-    // Set up the rendering context, load shaders and other resources, etc.:
-            //QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-            QOpenGLFunctions_3_0 *f;
-        //QOpenGLFunctions_3_1 *f = QOpenGLContext::currentContext()->versionFunctions();
-            f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_0>();
+       QOpenGLFunctions_3_0 *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_0>();
                 if ( !f ) {
                     qWarning( "Could not obtain OpenGL versions object&quot" );
                     exit( 1 );
                 }
             f->initializeOpenGLFunctions();
-            f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     //
-    qDebug() << QString((const char*)f->glGetString(GL_VERSION)) << "\n" << QString((const char*)f->glGetString(GL_VENDOR))<< "\n" << QString((const char*)f->glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
+    qDebug() << QString((const char*)f->glGetString(GL_VERSION)) << "\n" <<
+                QString((const char*)f->glGetString(GL_VENDOR))<< "\n" <<
+                QString((const char*)f->glGetString(GL_RENDERER));//<< "\n" << glGetString(GL_EXTENTIONS);
 
-    QSurfaceFormat pformat=QOpenGLContext::currentContext()->format();
-    qDebug() << "Version format= " << pformat.majorVersion() << " " << pformat.minorVersion();
+    qDebug() << "Version format= " << QOpenGLContext::currentContext()->format().majorVersion() <<
+                " " << QOpenGLContext::currentContext()->format().minorVersion();
 
     // очищаем поле
     //glClearColor(0.1f,0.1f,0.2f,1.0f); // тёмно-синенький
