@@ -2,22 +2,26 @@
 attribute highp vec4 vertexAttr;
 uniform mediump mat4 viewport;  // gl_ModelViewProjectionMatrix
 attribute lowp vec4 colorAttr;
-//attribute float R;
 uniform float R;
-uniform vec4 viewport2; // камера ??
-//out int pointsize; // output for debug
+uniform vec4 viewport2; // //получаем размеры окна рисования (x0,y0,w,h)
 
 // for perspective proection
 varying mat4 VPMTInverse;
 varying mat4 VPInverse;
 varying vec3 centernormclip;
 
+// это временный костыль
 varying lowp vec4 color;
+varying float radius;
+varying vec3  center;
+varying vec4  position;
+// end kostyele
 
 void main()
 {
-gl_Position = viewport * vertexAttr; // первоначальное положение , затем будем трансформировать с учётом перспективной проекции
+gl_Position = viewport * vertexAttr; // первоначальное положение , затем будем трансформировать с учётом перспективного искажения шара
 gl_FrontColor = colorAttr;
+color = colorAttr;
 
     mat4 T = mat4(
             1.0, 0.0, 0.0, 0.0,
@@ -68,4 +72,9 @@ gl_FrontColor = colorAttr;
     vec4 centerclip = gl_ModelViewMatrix*vertexAttr;
     //vec4 centerclip = viewport*vertexAttr;
     centernormclip = vec3(centerclip)/centerclip.w;
+
+    // temp of костыль
+    radius=R;
+    center=gl_Position.xyz;
+    position=gl_Position;
 }

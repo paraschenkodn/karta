@@ -81,7 +81,7 @@ void shphere::draw()
 
       // получаем текущий viewport (как будет решаться вопрос с поворотом???)
       float viewport2[4];
-      glGetFloatv(GL_VIEWPORT, viewport2);
+      glGetFloatv(GL_VIEWPORT, viewport2);  //получаем размеры окна рисования (x0,y0,w,h)
       //glUniform4fv(m_program.programId(),1,viewport2);
       QVector4D viewport(viewport2[0],viewport2[1],viewport2[2],viewport2[3]);
       m_program->setUniformValue("viewport2",viewport);
