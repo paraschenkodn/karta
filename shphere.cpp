@@ -84,7 +84,7 @@ void shphere::draw()
       glGetFloatv(GL_VIEWPORT, viewport2);  //получаем размеры окна рисования (x0,y0,w,h)
       //glUniform4fv(m_program.programId(),1,viewport2);
       QVector4D viewport(viewport2[0],viewport2[1],viewport2[2],viewport2[3]);
-      m_program->setUniformValue("viewport2",viewport);
+      m_program->setUniformValue("viewport",viewport);
 
       // рисуем точки
       glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);   // говорим что будут меняться размеры точек в шейдере
@@ -151,7 +151,7 @@ void shphere::setOrthogonal()
     // устанавливаем привязку между приложением и шейдерами  ???зачем???
     // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
     m_vertexAttr=m_program->attributeLocation("vertexAttr");          // координаты точек из массива
-    m_matrixUniform=m_program->uniformLocation("viewport");  // область просмотра
+    m_matrixUniform=m_program->uniformLocation("MVPM");  // область просмотра
     m_colorAttr=m_program->attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
     //m_texAttr=m_program->attributeLocation("texAttr");
     //m_texUniform=m_program->attributeLocation("texUniform");//*/
@@ -163,7 +163,7 @@ void shphere::setPerspective()
     // устанавливаем привязку между приложением и шейдерами  ???зачем???
     // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
     m_vertexAttr=m_program->attributeLocation("vertexAttr");          // координаты точек из массива
-    m_matrixUniform=m_program->uniformLocation("viewport");  // область просмотра
+    m_matrixUniform=m_program->uniformLocation("MVPM");  // область просмотра
     m_colorAttr=m_program->attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
     //m_texAttr=m_program->attributeLocation("texAttr");
     //m_texUniform=m_program->attributeLocation("texUniform");//*/

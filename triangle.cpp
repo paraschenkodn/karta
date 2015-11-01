@@ -47,7 +47,7 @@ Triangle::Triangle():
     // возможно так быстрее будет обращаться к переменным напрямую, чем по имени, если нет, можно обойтись без этого блока
     m_vertexAttr=m_program.attributeLocation("vertexAttr");
     m_colorAttr=m_program.attributeLocation("colorAttr");
-    m_matrixUniform=m_program.uniformLocation("viewport");
+    m_matrixUniform=m_program.uniformLocation("MVPM");
     m_texAttr=m_program.attributeLocation("texAttr");
     m_texUniform=m_program.attributeLocation("texUniform");//*/
 

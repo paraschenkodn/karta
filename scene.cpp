@@ -3,6 +3,7 @@
 #include <QMatrix4x4>
 
 const float step=0.01f; // шаг сдвига
+float ratio;
 
 Scene::Scene(QWidget *parent) :
     QOpenGLWidget (parent),
@@ -79,29 +80,45 @@ void Scene::paintGL(){
 
     //glMatrixMode(GL_MODELVIEW);
 
-    //пишем матрицу ориентации
-    QMatrix4x4 viewport;
+    //пишем матрицы преобразований
+    QMatrix4x4 LMM; // Local Model matrix (делает преобразования в локальных координатах объекта, для одного объекта их может быть несколько для разных частей объекта)
+    QMatrix4x4 MM; // Model matrix (выносит координаты объекта в координаты пространства сцены,
+                  //выполняется в следующем порядке - масштабирование, поворот, перенос)
+                  // TranslationMatrix * RotationMatrix * ScaleMatrix * OriginalVector; (в коде это выглядит в обратном порядке)
+    QMatrix4x4 MVM; // ModelView matrix (View matrix)("масштабирует крутит и перемещает весь мир")
+    QMatrix4x4 PM; // Projection matrix // проекционная матрица
+    QMatrix4x4 MVPM; // ModelViewProjection matrix (projection * view * model)
     if (perspective) {
         // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
         // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-        viewport.perspective(60.0f,width()/height(),0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+        PM.perspective(37.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     }
     else {
         // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
-        viewport.ortho(-2.0f,2.0f,-2.0f,2.0f,-8.0f,8.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
+        PM.ortho(-2.0f,2.0f,-2.0f,2.0f,-8.0f,8.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
         // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
     }
-    viewport.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка. // не работает в ортогональной проекции если перенести слишком далеко, за пределы куба отсечения
+    MVM.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка. // не работает в ортогональной проекции если перенести слишком далеко, за пределы куба отсечения
     // изменяем масштаб фигуры (увеличиваем)
-    viewport.scale(2.0f);
+    MVM.scale(2.0f);
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
-    viewport.rotate(m_angle,0.0f,1.0f,0.0f);
+    MVM.rotate(m_angle,0.0f,1.0f,0.0f);
+
+    // находим проекционную инверсную мтрицу
+    bool inverted;
+    QMatrix4x4 PMi=PM.inverted(&inverted);
+    if (!inverted)
+        qDebug() << "PMi не конвертится";
+    MVPM=PM*MVM;
+    QMatrix4x4 MVPMi=MVM.inverted(&inverted);
+    if (!inverted)
+        qDebug() << "MVPMi не конвертится";
 
     // РИСУЕМ ТРЕУГОЛЬНИК
     // инициализируем данные программы матрицы и атрибуты
     m_triangle->init();
-    // зaпихиваем в его программу матрицу ориентации view
-    m_triangle->m_program.setUniformValue(m_triangle->m_matrixUniform, viewport);
+    // зaпихиваем в его программу матрицу ориентации
+    m_triangle->m_program.setUniformValue(m_triangle->m_matrixUniform, MVPM);
     // вызываем функцию рисования объекта (или объектов в for)
     m_triangle->draw();
     // проводим сброс инициализации параметров
@@ -109,13 +126,17 @@ void Scene::paintGL(){
 
     //РИСУЕМ СФЕРЫ
     m_shphere->init();
-    m_shphere->m_program->setUniformValue(m_shphere->m_matrixUniform, viewport);
+    m_shphere->m_program->setUniformValue(m_shphere->m_matrixUniform, MVPM);
+    m_shphere->m_program->setUniformValue("PMi", PMi);
+    m_shphere->m_program->setUniformValue("MVM", MVM);
+    m_shphere->m_program->setUniformValue("MVPMi", MVPMi);
     m_shphere->draw();
     m_shphere->drop();//*/
 
 }
 
 void Scene::resizeGL(int w, int h){
+  ratio = (1.0*w)/(!h?1:h);
   glViewport(0,0,w,h);
 }
 
@@ -166,11 +187,11 @@ void Scene::defaultStates()
     glDisable(GL_LIGHT0);
     glDisable(GL_NORMALIZE);
 
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
+    // deprecated
+    //glMatrixMode(GL_MODELVIEW);
+    //glPopMatrix();
+    //glMatrixMode(GL_PROJECTION);
+    //glPopMatrix();
 
     glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0.0f);
     float defaultMaterialSpecular[] = {0.0f, 0.0f, 0.0f, 1.0f};

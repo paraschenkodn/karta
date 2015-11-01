@@ -1,5 +1,5 @@
 #version 120
-uniform vec4 viewport2; //получаем размеры окна рисования (x0,y0,w,h)
+uniform vec4 viewport; //получаем размеры окна рисования (x0,y0,w,h)
 varying float radius;
 varying vec3  center;
 
@@ -7,7 +7,7 @@ void main(void) {
     //gl_FragColor = color; // просто принимаем значение без обработки
     //gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 
-    vec2 ndc_current_pixel = ((2.0 * gl_FragCoord.xy) - (2.0 * viewport2.xy)) / (viewport2.zw) - 1; //
+    vec2 ndc_current_pixel = ((2.0 * gl_FragCoord.xy) - (2.0 * viewport.xy)) / (viewport.zw) - 1; //
     //(позиция gl_Position (0 в центре экрана, координаты сцены) соотносится к gl_FragCoord (0 внизу слева, координаты экрана)
     // как gl_FragCoord = gl_Position * 0,5 + 0,5 ) (2d_coord_vertex = viewport.xy + viewport.wh * (1 + gl_Position.xy / gl_Position.w)/2)
 

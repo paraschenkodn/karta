@@ -4,7 +4,7 @@ varying mat4 VPInverse;
 varying vec3 centernormclip;
 
 // временный костыль
-uniform vec4 viewport2;
+uniform vec4 viewport;
 varying lowp vec4 color;
 varying float radius;
 varying vec3  center;
@@ -14,17 +14,17 @@ varying vec4  position;
 void main(void) {
 
     // временный костыль
-    //vec2 ndc_current_pixel = (((2.0 * gl_FragCoord.xy) - (2.0 * viewport2.xy)) / (viewport2.zw)) - 1; //
+    //vec2 ndc_current_pixel = (((2.0 * gl_FragCoord.xy) - (2.0 * viewport.xy)) / (viewport.zw)) - 1; //
     //ndc_current_pixel=ndc_current_pixel/gl_FragCoord.w;
-    //vec2 ndc_current_pixel = (((gl_FragCoord.xy - viewport2.xy) / (viewport2.zw)) - 1)*2*gl_FragCoord.w;
-    //vec2 ndc_current_pixel = (2.0 * (gl_FragCoord.xy / viewport2.zw)) - 1; //
+    //vec2 ndc_current_pixel = (((gl_FragCoord.xy - viewport.xy) / (viewport.zw)) - 1)*2*gl_FragCoord.w;
+    //vec2 ndc_current_pixel = (2.0 * (gl_FragCoord.xy / viewport.zw)) - 1; //
     //ndc_current_pixel=ndc_current_pixel/3 + center.xy;
 
     //vec3 tmp_center = position.xyz / position.w;
     //vec2 diff = gl_FragCoord.xy - tmp_center.xy;  // вычисляем разницу векторов между точкой и центром (center - в координатах сцены?? gl_FragCoord - в координатах экрана??)
 
     vec4 ndcPos;
-    ndcPos.xy = ((gl_FragCoord.xy / viewport2.zw) * 2.0) - 1.0;
+    ndcPos.xy = ((gl_FragCoord.xy / viewport.zw) * 2.0) - 1.0;
     ndcPos.z = (2.0 * gl_FragCoord.z - gl_DepthRange.near - gl_DepthRange.far) / (gl_DepthRange.far - gl_DepthRange.near);
     ndcPos.w = 1.0;
     vec4 ndc_current_pixel = ndcPos / gl_FragCoord.w  ;
@@ -36,7 +36,7 @@ void main(void) {
 
     //gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
     if (d2>r2) {        // если скаляр радиуса меньше скаляра вектора от центра сферы до точки поверхности, отбрасываем, иначе рисуем сферу
-        //discard;
+        discard;
     } else {
         vec3 l = normalize(gl_LightSource[0].position.xyz);
         float dr =  sqrt(r2-d2);
