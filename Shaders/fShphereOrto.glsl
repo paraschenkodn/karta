@@ -16,7 +16,7 @@ void main(void) {
     float r2 = radius*radius;               // радиус на радиус, теперь можем сравнить два скалярных произведения
 
     if (d2>r2) {        // если скаляр радиуса меньше скаляра вектора от центра сферы до точки поверхности, отбрасываем, иначе рисуем сферу
-        discard;
+        //discard;
     } else {
         vec3 l = normalize(gl_LightSource[0].position.xyz);
         float dr =  sqrt(r2-d2);
