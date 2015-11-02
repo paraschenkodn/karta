@@ -27,6 +27,19 @@ private:
 
   // определяем метод изменяющий координаты положения треугольника
   void keyPressEvent(QKeyEvent *event);
+  void mousePressEvent(QMouseEvent *event);      // работка с мышью, переопределяем функции обработки сообщений мыши (нажатие кнопок)
+  void mouseReleaseEvent(QMouseEvent *event);    // переопределяем функции обработки сообщений мыши (отпускание кнопки)
+  ///*********
+  void mouseMoveEvent(QMouseEvent *event);       // переопределяем функции обработки сообщений мыши (перемещение)
+  ///* если будем водить мышью по форме диалога с нажатой клавишей, сообщения также получает сцена
+  /// ********
+  void wheelEvent(QWheelEvent * event);  // переопределяем функции обработки сообщений мыши (колесо)
+
+  // переменные камеры
+  QVector3D cameraEye;
+  QVector3D cameraCenter;
+  QVector3D cameraUp;
+  // енд камера
 
   Triangle *m_triangle;
   QOpenGLShaderProgram m_program;

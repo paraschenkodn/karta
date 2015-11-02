@@ -92,7 +92,7 @@ void Scene::paintGL(){
     if (perspective) {
         // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
         // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-        PM.perspective(30.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+        PM.perspective(90.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     }
     else {
         // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
@@ -105,8 +105,11 @@ void Scene::paintGL(){
     // изменяем масштаб фигуры (увеличиваем)
     ///MVM.scale(10.0f);  // отрицательное число переворачивает проекцию // влияет только на ортогональную проекцию // убивает Шферы
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
-    MVM.rotate(m_angle,0.0f,1.0f,0.0f);
-    //MVM.lookAt();
+    ///MVM.rotate(m_angle,0.0f,1.0f,0.0f);
+    QVector3D cameraEye (.2,.4,.5);
+    QVector3D cameraCenter (0.0,0.0,0.0);
+    QVector3D cameraUp (0.0,1.0,0.0);
+    MVM.lookAt(cameraEye,cameraCenter,cameraUp);
 
     // находим проекционную инверсную мтрицу
     bool inverted;
