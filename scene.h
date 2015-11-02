@@ -39,6 +39,7 @@ private:
   QVector3D cameraEye;
   QVector3D cameraCenter;
   QVector3D cameraUp;
+  //int camEyePos; // позиция камеры () // + control of board??
   // енд камера
 
   Triangle *m_triangle;

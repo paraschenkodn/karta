@@ -17,7 +17,7 @@ Scene::Scene(QWidget *parent) :
   // запускаем таймер
   m_timer.start(20);
 
-  /*/ Specify the format and create platform-specific surface // В ATI ломает рисовку
+  /*/ Specify the format and create platform-specific surface // В ATI HD 4000 ломает рисовку
   QSurfaceFormat format;
   format.setDepthBufferSize( 24 );
   format.setSamples( 4 );
@@ -25,6 +25,11 @@ Scene::Scene(QWidget *parent) :
   //format.setVersion(2,0);
   //format.setProfile( QSurfaceFormat::CompatibilityProfile );//( QSurfaceFormat::NoProfile ); // NoProfile for OGL<3.2 ( QSurfaceFormat::CoreProfile ); //// ( QSurfaceFormat::CompatibilityProfile )
   setFormat( format );//*/
+
+  // устанавливаем параметры камеры
+  cameraEye=QVector3D(0.0f,0.0f,0.0f);
+  cameraCenter=QVector3D(0.0f,0.0f,-1.0f);
+  cameraUp=QVector3D(0.0f,1.0f,0.0f);
 }
 
 Scene::~Scene()
@@ -106,9 +111,6 @@ void Scene::paintGL(){
     ///MVM.scale(10.0f);  // отрицательное число переворачивает проекцию // влияет только на ортогональную проекцию // убивает Шферы
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
     ///MVM.rotate(m_angle,0.0f,1.0f,0.0f);
-    QVector3D cameraEye (.2,.4,.5);
-    QVector3D cameraCenter (0.0,0.0,0.0);
-    QVector3D cameraUp (0.0,1.0,0.0);
     MVM.lookAt(cameraEye,cameraCenter,cameraUp);
 
     // находим проекционную инверсную мтрицу
@@ -251,6 +253,39 @@ void Scene::keyPressEvent(QKeyEvent *event)
       break;
     }
   update();
+}
+
+void Scene::mousePressEvent(QMouseEvent *event)
+{
+  ;
+}
+
+void Scene::mouseReleaseEvent(QMouseEvent *event)
+{
+  ;
+}
+
+void Scene::mouseMoveEvent(QMouseEvent *event)
+{
+  ;
+}
+
+void Scene::wheelEvent(QWheelEvent *event)
+{ // шаг колеса обычно 120 едениц, 1 еденица это 1/8 градуса, значит 1 шаг = 15 градусам.
+  // мы будем считать в еденицах (некоторые драйвера мыши дают точность больше, т.е. меньше 120 за такт)
+
+  if (!event->isAccepted()) {
+      //camEyePos += event->delta();
+
+      /*if (camEyePos < -8 * 120)
+          camEyePos = -8 * 120;
+      if (camEyePos > 10 * 120)
+          camEyePos = 10 * 120;//*/
+      //event->accept();
+    }
+  // move to new position by step 120/10000 пока только по оси Z (-delta - значит крутим на себя)
+cameraEye=cameraEye+QVector3D(0.0f,0.0f,((float)event->angleDelta().y()/10000));
+cameraCenter=cameraCenter+cameraEye;
 }
 
 void Scene::slotAnimation()
