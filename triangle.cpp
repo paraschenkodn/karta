@@ -6,9 +6,9 @@ Triangle::Triangle(QOpenGLShaderProgram *program, int vertexAttr, int colorAttr,
         m_colorAttr(colorAttr),
         m_texAttr(texAttr),
         m_texUniform(texUniform),
-        m_x0(-0.5f),
-        m_y0(-0.5f),
-        m_size(1.0f)  // size triangle
+        m_x0(-0.05f),
+        m_y0(-0.05f),
+        m_size(0.1f)  // size triangle
 {
 initVertices();
 initColors();
@@ -18,9 +18,9 @@ m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
 }
 
 Triangle::Triangle():
-    m_x0(-0.5f),
-    m_y0(-0.5f),
-    m_size(1.0f)  // size triangle
+    m_x0(-0.05f),
+    m_y0(-0.05f),
+    m_size(0.1f)  // size triangle
 {
     initVertices();
     initColors();
@@ -133,17 +133,17 @@ m_vertices.resize(9); // увеличиваем масив до 9 значени
 // 0
 m_vertices[0] = m_x0;
 m_vertices[1] = m_y0;
-m_vertices[2] = 0.0f;
+m_vertices[2] = -0.6f;
 
 // 1
 m_vertices[3] = m_x0+m_size;
 m_vertices[4] = m_y0;
-m_vertices[5] = 0.0f;
+m_vertices[5] = -0.6f;
 
 // 2
 m_vertices[6] = m_x0+m_size/2.0f;
 m_vertices[7] = m_y0+m_size;
-m_vertices[8] = 0.0f;
+m_vertices[8] = -0.6f;
 }
 
 void Triangle::initColors()      // инициализация вектора цветов

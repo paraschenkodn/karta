@@ -18,6 +18,8 @@ public:
   Scene(QWidget *parent = 0);
   ~Scene();
 
+  QVector4D viewport;
+
 private:
   void initializeGL();
   void paintGL();

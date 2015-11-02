@@ -86,23 +86,27 @@ void Scene::paintGL(){
                   //выполняется в следующем порядке - масштабирование, поворот, перенос)
                   // TranslationMatrix * RotationMatrix * ScaleMatrix * OriginalVector; (в коде это выглядит в обратном порядке)
     QMatrix4x4 MVM; // ModelView matrix (View matrix)("масштабирует крутит и перемещает весь мир")
+    QMatrix4x4 ModelView; // тоже самое что и MVM, но для использования функции LookAt
     QMatrix4x4 PM; // Projection matrix // проекционная матрица
     QMatrix4x4 MVPM; // ModelViewProjection matrix (projection * view * model)
     if (perspective) {
         // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
         // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-        PM.perspective(37.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+        PM.perspective(30.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     }
     else {
         // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
         PM.ortho(-2.0f,2.0f,-2.0f,2.0f,-8.0f,8.0f); // glOrtho(left,right,bottom,top,near,far) // увеличение значений уменьшает фигуры на сцене (по Z задаём больше, чтобы не видеть отсечение фигур)
         // переносим по z дальше, обязательное условие для перспективной проекции // по оси z 0 это "глаз", - движение камеры назад, + вперёд.
     }
-    MVM.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка. // не работает в ортогональной проекции если перенести слишком далеко, за пределы куба отсечения
+    ///MVM.translate(0.0f,0.0f,-6.0f); // переносим по z от "глаз", сдвигаем камеру на минус, т.е. в сторону затылка.
+    // не работает в ортогональной проекции если перенести слишком далеко, за пределы куба отсечения
+    // оппа, мы видим передние границы пирамиды отсечения, где всё отсекается (тут-то шейдерным сферам и конец)
     // изменяем масштаб фигуры (увеличиваем)
-    MVM.scale(2.0f);
+    ///MVM.scale(10.0f);  // отрицательное число переворачивает проекцию // влияет только на ортогональную проекцию // убивает Шферы
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
     MVM.rotate(m_angle,0.0f,1.0f,0.0f);
+    //MVM.lookAt();
 
     // находим проекционную инверсную мтрицу
     bool inverted;
@@ -110,7 +114,7 @@ void Scene::paintGL(){
     if (!inverted)
         qDebug() << "PMi не конвертится";
     MVPM=PM*MVM;
-    QMatrix4x4 MVPMi=MVM.inverted(&inverted);
+    QMatrix4x4 MVPMi=MVPM.inverted(&inverted);
     if (!inverted)
         qDebug() << "MVPMi не конвертится";
 
@@ -130,6 +134,7 @@ void Scene::paintGL(){
     m_shphere->m_program->setUniformValue("PMi", PMi);
     m_shphere->m_program->setUniformValue("MVM", MVM);
     m_shphere->m_program->setUniformValue("MVPMi", MVPMi);
+    m_shphere->m_program->setUniformValue("viewport",viewport);
     m_shphere->draw();
     m_shphere->drop();//*/
 
@@ -138,6 +143,7 @@ void Scene::paintGL(){
 void Scene::resizeGL(int w, int h){
   ratio = (1.0*w)/(!h?1:h);
   glViewport(0,0,w,h);
+  viewport.setX(0); viewport.setY(0); viewport.setZ((float)w); viewport.setW((float)h);
 }
 
 void Scene::setStates()

@@ -45,11 +45,13 @@ void main() {
 
     // prepare varyings
 
+    // перенос в локальное пространство координат шара-точки
     mat4 TInverse = mat4(
             1.0,          0.0,          0.0,         0.0,
             0.0,          1.0,          0.0,         0.0,
             0.0,          0.0,          1.0,         0.0,
             -vertexAttr.x, -vertexAttr.y, -vertexAttr.z, R);
+
     mat4 VInverse = mat4( // TODO: move this one to CPU // лишний код который вычисляется на раз в сцене (не надо его считать для каждой вершины)
             2.0/float(viewport.z), 0.0, 0.0, 0.0,
             0.0, 2.0/float(viewport.w), 0.0, 0.0,

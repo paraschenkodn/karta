@@ -71,7 +71,7 @@ void shphere::draw()
       //m_program->setUniformValue(m_texAttr,0);
 
       //m_program->setAttributeValue("R",R); // пока используем статичный радиус
-      m_program->setUniformValue("R",0.1f); // пока используем статичный радиус
+      m_program->setUniformValue("R",0.01f); // пока используем статичный радиус
 
       // активируем массивы цветов
       m_program->enableAttributeArray(m_vertexAttr);
@@ -84,7 +84,7 @@ void shphere::draw()
       glGetFloatv(GL_VIEWPORT, viewport2);  //получаем размеры окна рисования (x0,y0,w,h)
       //glUniform4fv(m_program.programId(),1,viewport2);
       QVector4D viewport(viewport2[0],viewport2[1],viewport2[2],viewport2[3]);
-      m_program->setUniformValue("viewport",viewport);
+      ///m_program->setUniformValue("viewport",viewport);
 
       // рисуем точки
       glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);   // говорим что будут меняться размеры точек в шейдере
@@ -110,19 +110,19 @@ void shphere::initVertices()   // инициализация вектора то
 // оформляем координаты точек
 m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас по 1 вершины по 3 координаты в каждой на три точки
 // 0
-m_vertices[0] = -0.5f;
-m_vertices[1] = -0.5f;
-m_vertices[2] = 0.0f;
+m_vertices[0] = -0.05f;
+m_vertices[1] = -0.05f;
+m_vertices[2] = -0.6f;  // Ось Z смотрит на нас, так что чтобы что-то увидеть с камеры в положении 0.0.0 надо фигуры рисовать в отрицательной области оси Z
 
 // 1
-m_vertices[3] = 0.5f;
-m_vertices[4] = -0.5f;
-m_vertices[5] = 0.0f;
+m_vertices[3] = 0.05f;
+m_vertices[4] = -0.05f;
+m_vertices[5] = -0.6f;
 
 // 2
 m_vertices[6] = 0.0f;
-m_vertices[7] = 0.5f;
-m_vertices[8] = 0.0f;
+m_vertices[7] = 0.05f;
+m_vertices[8] = -0.6f;
 }
 
 // на каждую точку оформляем по одной координате цвета (R,G,B)
