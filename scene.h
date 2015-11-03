@@ -35,19 +35,25 @@ private:
   /// ********
   void wheelEvent(QWheelEvent * event);  // переопределяем функции обработки сообщений мыши (колесо)
 
+  // переменные фигур
+  const float step=0.01f; // шаг сдвига фигур
+
   // переменные камеры
+  float ratio;
   QVector3D cameraEye;
   QVector3D cameraCenter;
   QVector3D cameraUp;
+  float cameraFocusAngle;
   //int camEyePos; // позиция камеры () // + control of board??
+  void setCameraInfo();  // формируем и посылаем текст для отображения параметров в главном окне
   // енд камера
 
   Triangle *m_triangle;
   QOpenGLShaderProgram m_program;
   //QVector<QOpenGLShaderProgram *> m_program;
   shphere *m_shphere;
-
   pointsofsphere *spherepoints;
+  void setFigureInfo(); // формируем и посылаем текст для отображения параметров в главном окне
 
   // создаём идентификаторы для обращения к шейдерным переменным
   int m_vertexAttr;
@@ -72,6 +78,10 @@ public slots:
 private slots:
   // заставляем прорисовываться по таймеру
   void slotAnimation();
+
+signals:
+  void setPerspectiveInfo(const QString &);
+  void setFiguresInfo(const QString &);
 };
 
 #endif // SCENE_H

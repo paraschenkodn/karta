@@ -8,6 +8,7 @@ Triangle::Triangle(QOpenGLShaderProgram *program, int vertexAttr, int colorAttr,
         m_texUniform(texUniform),
         m_x0(-0.05f),
         m_y0(-0.05f),
+        m_z0(0.0f),
         m_size(0.1f)  // size triangle
 {
 initVertices();
@@ -20,6 +21,7 @@ m_texture=new QOpenGLTexture(QImage(":/Textures/rbt.png"));
 Triangle::Triangle():
     m_x0(-0.05f),
     m_y0(-0.05f),
+    m_z0(0.0f),
     m_size(0.1f)  // size triangle
 {
     initVertices();
@@ -117,6 +119,13 @@ void Triangle::sety0(float y)
   initVertices();
 }
 
+void Triangle::setz0(float z)
+{
+    m_z0=z;
+    // пересчитываем остальные точки (инициализируем заново вершины)
+    initVertices();
+}
+
 float Triangle::getx0()
 {
    return m_x0;
@@ -127,23 +136,34 @@ float Triangle::gety0()
     return m_y0;
 }
 
+float Triangle::getz0()
+{
+    return m_z0;
+}
+
+QString Triangle::getFigureInfo()
+{
+    QString text="Стартовая точка треугольника: x="+QString().setNum(m_x0)+","+QString().setNum(m_y0)+","+QString().setNum(m_z0);
+    return text;
+}
+
 void Triangle::initVertices()   // инициализация вектора вершин
 {
 m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас 3 вершины по 4 координаты в каждой (4?)
 // 0
 m_vertices[0] = m_x0;
 m_vertices[1] = m_y0;
-m_vertices[2] = -0.6f;
+m_vertices[2] = m_z0;
 
 // 1
 m_vertices[3] = m_x0+m_size;
 m_vertices[4] = m_y0;
-m_vertices[5] = -0.6f;
+m_vertices[5] = m_z0;
 
 // 2
 m_vertices[6] = m_x0+m_size/2.0f;
 m_vertices[7] = m_y0+m_size;
-m_vertices[8] = -0.6f;
+m_vertices[8] = m_z0;
 }
 
 void Triangle::initColors()      // инициализация вектора цветов

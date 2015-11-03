@@ -23,14 +23,18 @@ public:
 
     void setx0(float x);
     void sety0(float y);
+    void setz0(float z);
 
     float getx0();
     float gety0();
+    float getz0();
 
     //координаты начальной позиции треугольника
     float m_x0;
     float m_y0;
+    float m_z0;
     float m_size;
+    QString getFigureInfo();
 
     QOpenGLShaderProgram m_program;
 

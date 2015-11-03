@@ -2,13 +2,10 @@
 
 #include <QMatrix4x4>
 
-const float step=0.01f; // шаг сдвига
-float ratio;
-
 Scene::Scene(QWidget *parent) :
     QOpenGLWidget (parent),
     m_angle(0),
-    perspective(false)
+    perspective(true)
 {
   // задаём для виджета фокус, чтобы оно реагировало на кнопки
   this->setFocusPolicy(Qt::StrongFocus);
@@ -27,9 +24,10 @@ Scene::Scene(QWidget *parent) :
   setFormat( format );//*/
 
   // устанавливаем параметры камеры
-  cameraEye=QVector3D(0.0f,0.0f,0.0f);
-  cameraCenter=QVector3D(0.0f,0.0f,-1.0f);
+  cameraEye=QVector3D(0.0f,0.0f,0.5f);
+  cameraCenter=QVector3D(0.0f,0.0f,-0.5f);
   cameraUp=QVector3D(0.0f,1.0f,0.0f);
+  cameraFocusAngle=17;
 }
 
 Scene::~Scene()
@@ -73,6 +71,8 @@ void Scene::initializeGL() {
         m_shphere->setPerspective();
             else
     m_shphere->setOrthogonal();
+    setCameraInfo(); // формируем и посылаем текст для отображения параметров в главном окне
+    setFigureInfo(); //
 }
 
 void Scene::paintGL(){
@@ -91,13 +91,13 @@ void Scene::paintGL(){
                   //выполняется в следующем порядке - масштабирование, поворот, перенос)
                   // TranslationMatrix * RotationMatrix * ScaleMatrix * OriginalVector; (в коде это выглядит в обратном порядке)
     QMatrix4x4 MVM; // ModelView matrix (View matrix)("масштабирует крутит и перемещает весь мир")
-    QMatrix4x4 ModelView; // тоже самое что и MVM, но для использования функции LookAt
+    QMatrix4x4 CameraView; // тоже самое что и MVM, но для использования функции LookAt
     QMatrix4x4 PM; // Projection matrix // проекционная матрица
     QMatrix4x4 MVPM; // ModelViewProjection matrix (projection * view * model)
     if (perspective) {
         // устанавливаем трёхмерную канву (в перспективной проекции) для рисования (плоскости отсечения)
         // угол перспективы, отношение сторон, расстояние до ближней отсекающей плоскости и дальней
-        PM.perspective(90.0f,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
+        PM.perspective(cameraFocusAngle,ratio,0.1f,100.0f);  // glFrustum( xmin, xmax, ymin, ymax, near, far)  // gluPerspective(fovy, aspect, near, far)
     }
     else {
         // устанавливаем трёхмерную канву (в ортогональной проекции) для рисования (плоскости отсечения)
@@ -110,8 +110,9 @@ void Scene::paintGL(){
     // изменяем масштаб фигуры (увеличиваем)
     ///MVM.scale(10.0f);  // отрицательное число переворачивает проекцию // влияет только на ортогональную проекцию // убивает Шферы
     // указываем угол поворота и ось поворота смотрящую из центра координат к точке x,y,z,
-    ///MVM.rotate(m_angle,0.0f,1.0f,0.0f);
-    MVM.lookAt(cameraEye,cameraCenter,cameraUp);
+    MVM.rotate(m_angle,0.0f,1.0f,0.0f);  // поворот вокруг оси центра координат
+    CameraView.lookAt(cameraEye,cameraCenter,cameraUp); // установка камеры (матрицы трансфрмации)
+    MVM=CameraView*MVM;  // получаем матрицу трансформации итогового вида
 
     // находим проекционную инверсную мтрицу
     bool inverted;
@@ -227,19 +228,27 @@ void Scene::keyPressEvent(QKeyEvent *event)
   switch (event->key()) {
     case Qt::Key_Up:
           m_triangle->sety0(m_triangle->m_y0+step);
+          m_shphere->sety0(m_shphere->m_y0+step);
       break;
     case Qt::Key_Left:
           m_triangle->setx0(m_triangle->m_x0-step);
+          m_shphere->setx0(m_shphere->m_x0-step);
       break;
     case Qt::Key_Right:
           m_triangle->setx0(m_triangle->m_x0+step);
+          m_shphere->setx0(m_shphere->m_x0+step);
       break;
     case Qt::Key_Down:
           m_triangle->sety0(m_triangle->m_y0-step);
+          m_shphere->sety0(m_shphere->m_y0-step);
       break;
   case Qt::Key_W:
+      m_triangle->setz0(m_triangle->m_z0-step); // - от нас
+      m_shphere->setz0(m_shphere->m_z0-step);
     break;
   case Qt::Key_S:
+      m_triangle->setz0(m_triangle->m_z0+step); // + к нам
+      m_shphere->setz0(m_shphere->m_z0+step);
     break;
   case Qt::Key_A:
         --m_angle;
@@ -249,9 +258,20 @@ void Scene::keyPressEvent(QKeyEvent *event)
         ++m_angle;
         if (m_angle>=360) m_angle=0;
     break;
+  case Qt::Key_I: // уменьшаем угол перспективы камеры min=10 // TODO ещё по идее надо отодвигать камеру, чтобы пирамида охватывала сцену
+      if (cameraFocusAngle>10) --cameraFocusAngle;
+    break;
+  case Qt::Key_O: // увеличиваем угол перспективы камеры max=120 // TODO приближать камеру
+      if (cameraFocusAngle<120) ++cameraFocusAngle;
+    break;
+  case Qt::Key_P:
+      cameraFocusAngle=90;
+    break;
     default:
       break;
     }
+  setCameraInfo();
+  setFigureInfo();
   update();
 }
 
@@ -285,7 +305,23 @@ void Scene::wheelEvent(QWheelEvent *event)
     }
   // move to new position by step 120/10000 пока только по оси Z (-delta - значит крутим на себя)
 cameraEye=cameraEye+QVector3D(0.0f,0.0f,((float)event->angleDelta().y()/10000));
-cameraCenter=cameraCenter+cameraEye;
+cameraCenter=cameraCenter+QVector3D(0.0f,0.0f,((float)event->angleDelta().y()/10000));
+setCameraInfo();
+}
+
+void Scene::setCameraInfo()
+{
+    QString text="I,O,P - изменение проекции. Фокусный угол="+QString().setNum(cameraFocusAngle);
+    text=text+" cameraEye="+QString().setNum(cameraEye[0])+","+QString().setNum(cameraEye[1])+","+QString().setNum(cameraEye[2])
+            +", cameraCenter="+QString().setNum(cameraCenter[0])+","+QString().setNum(cameraCenter[1])+","+QString().setNum(cameraCenter[2])
+            +" cameraUp="+QString().setNum(cameraUp[0])+","+QString().setNum(cameraUp[1])+","+QString().setNum(cameraUp[2]);
+    emit setPerspectiveInfo(text);
+}
+
+void Scene::setFigureInfo()
+{
+    QString text=m_triangle->getFigureInfo()+", "+m_shphere->getFigureInfo();
+    emit setFiguresInfo(text);
 }
 
 void Scene::slotAnimation()

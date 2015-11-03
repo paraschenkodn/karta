@@ -24,6 +24,16 @@ public:
     int m_texUniform;
     int m_matrixUniform;
 
+    //координаты позиции первого ШАРА (от которого расчитываются позиции остальных)
+    float m_x0;
+    float m_y0;
+    float m_z0;
+    float m_dist; // дистанция между шарами
+    void setx0(float x);
+    void sety0(float y);
+    void setz0(float z);
+    QString getFigureInfo();
+
 private:
     std::vector<float> m_vertices; //создаём вектор (контейнер хранения) координат вершин
     std::vector<float> m_colors; //создаём вектор (контейнер хранения) координат цветов точек которые рисуем

@@ -18,6 +18,10 @@ public:
 private:
   Ui::MainWindow *ui;
 
+public slots:
+  // устанавливаем инфотекст о проекции
+  //void setPerspectiveInfo(QString &text);
+
 };
 
 #endif // MAINWINDOW_H

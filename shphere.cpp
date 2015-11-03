@@ -15,7 +15,11 @@ void shphere::printInfoLog(GLuint obj) {
     delete [] infoLog;
 }//*/
 
-shphere::shphere()
+shphere::shphere():
+    m_x0(-0.05f),
+    m_y0(-0.05f),
+    m_z0(0.0f),
+    m_dist(0.1f)  // distations beatween shpheres
 {
     // инициализируем шейдеры
     QOpenGLShader vShader(QOpenGLShader::Vertex);
@@ -105,24 +109,23 @@ void shphere::drop()
     m_program->release();
 }
 
-void shphere::initVertices()   // инициализация вектора точек
+void shphere::initVertices()   // инициализация вектора вершин
 {
-// оформляем координаты точек
-m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас по 1 вершины по 3 координаты в каждой на три точки
+m_vertices.resize(9); // увеличиваем масив до 9 значений, т.к. у нас 3 вершины
 // 0
-m_vertices[0] = -0.05f;
-m_vertices[1] = -0.05f;
-m_vertices[2] = -0.6f;  // Ось Z смотрит на нас, так что чтобы что-то увидеть с камеры в положении 0.0.0 надо фигуры рисовать в отрицательной области оси Z
+m_vertices[0] = m_x0;
+m_vertices[1] = m_y0;
+m_vertices[2] = m_z0;
 
 // 1
-m_vertices[3] = 0.05f;
-m_vertices[4] = -0.05f;
-m_vertices[5] = -0.6f;
+m_vertices[3] = m_x0+m_dist;
+m_vertices[4] = m_y0;
+m_vertices[5] = m_z0;
 
 // 2
-m_vertices[6] = 0.0f;
-m_vertices[7] = 0.05f;
-m_vertices[8] = -0.6f;
+m_vertices[6] = m_x0+m_dist/2.0f;
+m_vertices[7] = m_y0+m_dist;
+m_vertices[8] = m_z0;
 }
 
 // на каждую точку оформляем по одной координате цвета (R,G,B)
@@ -167,5 +170,32 @@ void shphere::setPerspective()
     m_colorAttr=m_program->attributeLocation("colorAttr");           // соответствующий набор цветов для точек из массива
     //m_texAttr=m_program->attributeLocation("texAttr");
     //m_texUniform=m_program->attributeLocation("texUniform");//*/
+}
+
+void shphere::setx0(float x)
+{
+    m_x0=x;
+    // пересчитываем остальные точки (инициализируем заново вершины)
+    initVertices();
+}
+
+void shphere::sety0(float y)
+{
+    m_y0=y;
+    // пересчитываем остальные точки (инициализируем заново вершины)
+    initVertices();
+}
+
+void shphere::setz0(float z)
+{
+    m_z0=z;
+    // пересчитываем остальные точки (инициализируем заново вершины)
+    initVertices();
+}
+
+QString shphere::getFigureInfo()
+{
+    QString text="Стартовая точка Шферы: x="+QString().setNum(m_x0)+","+QString().setNum(m_y0)+","+QString().setNum(m_z0);
+    return text;  // так как переменная уничтожается после выхода из функции, надо использовать спецификатор const
 }
 
